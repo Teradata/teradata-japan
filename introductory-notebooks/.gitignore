@@ -1,2 +1,4 @@
 /mtcars.csv
-/housing_lgbm.pmml
+/*.pmml
+/*.onnx
+/*.tf
