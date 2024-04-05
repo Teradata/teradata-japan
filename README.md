@@ -22,7 +22,7 @@
 5. パスワードを記入し、"SET PASSWORD" をクリック
 6. [ClearScape Analytics Experience](https://clearscape.teradata.com/sign-in) を開き、Emailとパスワードでログイン
 
-### 環境作成、Jupyterの起動
+### 環境作成、Jupyterを起動
 
 1. "CREATE ENVIRONMENT" をクリック
 2. 環境名 (任意)、接続パスワード（任意）、Region（どこでも可だか、場合によっては自分の住んでいる地域が良い場合も）を設定
@@ -30,13 +30,16 @@
 4. 使いたい環境を選択し、"RUN DEMOS USING JUPYTER" をクリック
 5. Jupyter Lab が開きます。
 
-### このレポジトリのノートブックを取得、実行
+### このレポジトリのノートブックを取得
 
 1. "Launcher" タブを開き、"Terminal" をクリック
 2. 開いたターミナルで、`git clone https://github.com/Teradata/teradata-japan.git` と打ち込み（またはコピーし）、Enter
 3. 数秒で、"teradata-japan" フォルダが取り込まれます（フォルダ一覧が更新されない場合は更新ボタンを押す）
-4. "teradata-japan" フォルダ以下に含まれるお好きなノートブック (.ipynb) ファイルを開く
-5. 実行時には、先に設定した接続パスワード（ログインパスワードではないことに注意）の記入が必要になります
+
+### ノートブックを実行
+
+1. "teradata-japan" フォルダ以下に含まれるお好きなノートブック (.ipynb) ファイルを開く
+2. 実行時には、先に設定した接続パスワード（ログインパスワードではないことに注意）の記入が必要になります
 
 
 
