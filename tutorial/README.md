@@ -1,4 +1,4 @@
-# Teradata Introductory Notebooks
+# Teradata tutorial
 
 このページでは、teradataの基本的な使い方について、ノートブックを用いて紹介しています。
 インターフェイス言語には主にPythonを採用しています。
