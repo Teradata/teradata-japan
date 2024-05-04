@@ -1,0 +1,36 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "employee_id",
+  "last_name",
+  "first_name",
+  "middle_name",
+  "gender",
+  "role",
+  "report_to",
+  "salary",
+  "birthday"
+]
+column_types = [
+  "INTEGER",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET LATIN",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "INTEGER",
+  "INTEGER",
+  "DATE"
+]
+geometry_columns = []
+geometry_epsg = []  # EPSG指定なしならNone
+
+primary_index = ["employee_id"]
+secondary_index = [
+]
+partition_by = [ ]
+
+no_fastload = true

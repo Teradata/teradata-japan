@@ -1,0 +1,31 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "pref_code",
+  "pref_name",
+  "population",
+  "household",
+  "area",
+  "geometry"
+]
+column_types = [
+  "BYTEINT",
+  "VARCHAR(5) CHARACTER SET UNICODE",
+  "INTEGER",
+  "INTEGER",
+  "FLOAT",
+  "ST_Geometry"
+]
+geometry_columns = ["geometry"]
+geometry_epsg = [4326]  # EPSG指定なしならNone
+
+primary_index = []
+secondary_index = [
+  { columns = ["geometry"], order_by = [], unique = false }
+]
+partition_by = [ "COLUMN" ]
+
+no_fastload = true

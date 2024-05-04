@@ -1,0 +1,31 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "office_name",
+  "country",
+  "address",
+  "latitude",
+  "longitude"
+]
+column_types = [
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "VARCHAR(3) CHARACTER SET LATIN",
+  "VARCHAR(70) CHARACTER SET UNICODE",
+  "FLOAT",
+  "FLOAT"
+]
+primary_index = []
+secondary_index = [
+  #{ columns = ["office_name"], order_by = [] },
+  #{ columns = ["country", "address"], order_by = [] },
+  # above are just for experiment
+  { columns = ["country"], order_by = [], unique = false }
+]
+# ToDo. Add more countries data (currently only Japan)
+#       Otherwise index is meaningless
+partition_by = []
+
+no_fastload = true

@@ -1,0 +1,20 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "calendar_date",
+  "holiday_name"
+]
+column_types = [
+  "DATE",
+  "VARCHAR(20) CHARACTER SET UNICODE"
+]
+primary_index = ["calendar_date"]
+secondary_index = []
+partition_by = [
+  """RANGE_N(calendar_date BETWEEN DATE'1955-01-01' AND DATE'2023-12-31' EACH INTERVAL '1' MONTH)"""
+]
+
+no_fastload = true
