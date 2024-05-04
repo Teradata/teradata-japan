@@ -1,0 +1,82 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q0010000"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "geospatial", "join"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "地理空間情報の分析"
+en = "Geospatial Information Analysis"
+
+[title]
+ja = """村にある新幹線駅"""
+en = """Shinkansen station in a village"""
+
+[content]
+ja = """
+新幹線の駅のうちで村にあるものをすべて抽出し、その路線名、都道府県名、村名、駅名を表示してください。
+"""
+en = """
+Find all shinkansen stations located in a village, and display the line name, the prefecture name, the village name and the station name.
+"""
+
+
+# ヒントなしで
+[hint]
+ja = """
+<ul>
+<li><em>japan.cities</em>, <em>facilities.stations</em>, <em>facilities.shinkansen</em>
+<li>図形が「含まれている」に該当する関数は？
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods" rel="noopener noreferrer" target="_blank">Geometry methods (マニュアル)</a>
+</ul>
+"""
+en = """
+<ul>
+<li><em>japan.cities</em>, <em>facilities.stations</em>, <em>facilities.shinkansen</em>
+<li>What method would be relevant for geometries being contained?
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods" rel="noopener noreferrer" target="_blank">Geometry methods (manual)</a>
+</ul>
+"""
+
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false         # クエリ結果の行列数の一致を求めるか
+shape = [1, 1]             # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+#types = [ "int" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = true             # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+line_name,pref_name,city_name,station_name
+東北新幹線,福島県,西郷村,新白河
+"""
+
+query = """
+SELECT
+  s.line_name,
+  c.pref_name,
+  c.city_name,
+  s.station_name
+FROM
+  facilities.stations AS s
+  INNER JOIN japan.cities AS c
+    ON c.geometry.ST_INTERSECTS(s.geometry) = 1
+WHERE 
+  s.line_name IN ( SELECT DISTINCT line_name FROM facilities.shinkansen )
+  AND RIGHT(c.city_name, 1) = '村'
+"""
+
+check_explain = false

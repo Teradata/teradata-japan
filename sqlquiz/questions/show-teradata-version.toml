@@ -1,0 +1,61 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000011"   # 中途半端なIDだが、最初の問題としては変わり種なので、若い番号を開けておく。
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "teradata-specific"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = """どのバージョンのTeradataか？"""
+en = """Which Version of Teradata am I using?"""
+
+[content]
+ja = """現在使用しているTeradataデータベースのバージョン番号を出力してください。
+"""
+en = """Show the version of Terdata database we are using.
+"""
+
+
+# ヒントなしで
+[hint]
+ja = ""
+en = ""
+
+
+# 参考文献なしで
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [1, 1]             # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+#types = [ "int" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = true             # クエリ結果の並び順が指定されているかどうか
+value_from = "query"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+#csv =
+query = """
+SELECT InfoData
+FROM dbc.dbcinfo
+WHERE InfoKey = 'VERSION'
+"""
+# バージョン番号は変わり得るので、動的に取得する
+
+check_explain = false

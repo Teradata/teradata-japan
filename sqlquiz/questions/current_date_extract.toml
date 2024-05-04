@@ -1,0 +1,97 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000201"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "sys_calendar", "current_timestamp", "extract"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = """日付の要素"""
+en = """Elements of date"""
+
+[content]
+ja = """
+現在時刻 (日本時間) について、その日付、曜日、年、月、日、時 を表示してください。
+ただし曜日は、漢字で "月曜日", "火曜日", ... のように表記してください。
+"""
+en = """
+For the current in Japan (UTC+9), show the date, day of the week, year, month, day, and hour.
+Note that we want the day of week to be shown in Japanese here:
+Monday="月曜日", Tuesday="火曜日", Wednesday="水曜日", Thursday="木曜日", Friday="金曜日", Saturday="土曜日", and Sunday="日曜日".
+"""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+<ul>
+<li><a href="https://www.docs.teradata.com/r/Teradata-VantageTM-SQL%E3%81%AE%E6%97%A5%E4%BB%98/%E6%99%82%E5%88%BB%E9%96%A2%E6%95%B0%E3%81%A8%E5%BC%8F-17.20/%E6%97%A5%E6%99%82%E3%81%8A%E3%82%88%E3%81%B2%E9%96%93%E9%9A%94%E3%81%AE%E9%96%A2%E6%95%B0%E3%81%A8%E5%BC%8F/EXTRACT" rel="noopener noreferrer" target="_blank">EXTRACT</a>
+</ul>
+"""
+en = """
+<ul>
+<li><a href="https://www.docs.teradata.com/r/Teradata-VantageTM-SQL-Date-and-Time-Functions-and-Expressions-17.20/DateTime-and-Interval-Functions-and-Expressions/EXTRACT" rel="noopener noreferrer" target="_blank">EXTRACT</a>
+</ul>
+"""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true  # クエリ結果の行列数の一致を求めるか
+shape = [1, 6]      # 想定されたクエリ結果のサイズ
+
+check_type = false         # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "query"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+
+# ToDo. 現行設定だと、おそらくシステム側の設定で "日本時間がタイムゾーンなし" になっている。
+#       そのため、日本時間に変換すると余計に9時間足されて間違った結果が得られる。要相談。
+query = """
+with dow as (
+  /*現在の日付と曜日を取得*/
+  select 
+    calendar_date
+    ,case day_of_week
+    when 1 then '日曜日'
+    when 2 then '月曜日'
+    when 3 then '火曜日'
+    when 4 then '水曜日'
+    when 5 then '木曜日'
+    when 6 then '金曜日'
+    when 7 then '土曜日'
+    else null end as "曜日"
+    ,current_timestamp AT TIME ZONE 'GMT+9' as timestamp_jst
+  from sys_calendar.calendar
+  where calendar_date = current_date
+)
+select
+  /*現在の日付*/
+  TRUNC(timestamp_jst, 'DD') AS dt
+  /*現在の曜日*/
+  ,a1."曜日"
+  /*タイムスタンプを年・月・日・時に分解*/
+  ,extract(year from timestamp_jst) as "year"
+  ,extract(month from timestamp_jst) as "month"
+  ,extract(day from timestamp_jst) as "day"
+  ,extract(hour from timestamp_jst) as "hour"
+from dow a1;
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

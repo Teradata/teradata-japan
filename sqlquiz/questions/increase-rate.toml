@@ -1,0 +1,114 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000450"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "arithmetic-function", "logarithm", "math"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# [category]
+# ja = "SQL/Teradata 基礎"
+# en = "SQL/Teradata Basic"
+
+[title]
+ja = "前年比増加率"
+en = "Increase rate from the past year"
+
+[content]
+ja = """増加率はいくつかの定義があります。たとえば次のようなものがよく使われます。
+<ol>
+<li> y<sub>t</sub> / y<sub>t-1</sub> - 1
+<li> 1 - y<sub>t-1</sub> / y<sub>t</sub>
+<li> log<sub>e</sub>(y<sub>t</sub>) - log<sub>e</sub>(y<sub>t-1</sub>)
+</ol>
+1つ目は前期の値を基準に変化の割合を計算するもので、最も一般的です。
+2つ目は基準を来期にしたものです。
+3つ目は自然対数を利用した定義で、各期について対象的である特徴があります。
+<br />
+これらの定義は変化が大きすぎなければ近い値を取ります。
+<br />
+TeraShirt社の月次売上について、2021年から2022へかけての前年同月比での増加率を、3つの定義で計算してください。
+なお、いずれかの年の売上が存在しない場合は除いてください。
+"""
+en = """There are several definitions for the increasing rate. The followings are often used:
+<ol>
+<li> y<sub>t</sub> / y<sub>t-1</sub> - 1
+<li> 1 - y<sub>t-1</sub> / y<sub>t</sub>
+<li> log<sub>e</sub>(y<sub>t</sub>) - log<sub>e</sub>(y<sub>t-1</sub>)
+</ol>
+The first one, which perhaps is the most popular, calculate the ratio of the change compared to the previous value.
+The second one takes the next value as the comparison basis.
+The third one uses the natural logarithm to approximate the two, and it is symmetric between the two values.
+<br />
+These definition takes a similar values so long as the change is not so drastic.
+<br />
+For TeraShirt's monthly store revenues, calculate the three increase rates from 2021 to 2022, compared by month.
+Please omit the month where one of the revenue does not exist.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [8, 4]            # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "int", "float" ]         # 想定されたクエリ結果の変数型
+
+check_value = true        # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+month,inc_rate1,inc_rate2,inc_rate3
+5,-0.52,-1.10,-0.7396052169417818
+6,-0.02,-0.02,-0.02146449098847856
+7,0.26,0.21,0.23344678258743706
+8,0.18,0.15,0.1664980711679536
+9,0.18,0.15,0.16140066332187186
+10,0.45,0.31,0.3693480055424297
+11,0.14,0.12,0.13001381554653965
+12,0.85,0.46,0.6149403811601754
+"""
+
+query = """
+with tmp AS (
+SELECT
+  EXTRACT(MONTH FROM purchase_date) AS sales_month,
+  EXTRACT(YEAR FROM purchase_date) AS sales_year,
+  SUM(sales_value) AS revenue
+FROM
+  TeraShirt.store_sales
+WHERE
+  sales_year IN (2021, 2022)
+GROUP BY 1,2
+)
+SELECT
+  COALESCE(a.sales_month, b.sales_month) AS "month",
+  1.00 * b.revenue / a.revenue - 1 AS inc_rate1,
+  1 - 1.00 * a.revenue / b.revenue AS inc_rate2,
+  LN(b.revenue) - LN(a.revenue) AS inc_rate3
+FROM 
+  tmp AS a
+  INNER JOIN tmp AS b
+    ON a.sales_month = b.sales_month
+       AND a.sales_year = 2021 AND b.sales_year = 2022
+ORDER BY 1
+"""
+
+check_explain = false

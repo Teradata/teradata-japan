@@ -1,0 +1,164 @@
+# これは問題定義のテンプレートファイルです。実際には問題文に含まれません。
+# ファイル名はある程度概要がわかるものをつけます。
+
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000901"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+   "recursive",
+  "math"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = """フィボナッチ数列 (再帰クエリ)"""
+en = """Fibonacci sequence (recursive query)"""
+
+[content]
+ja = """
+フィボナッチ数列は、次のように定義されます。
+<br /><br />
+F<sub>1</sub> = 1, F<sub>2</sub> = 1, n > 1 について：
+<br />
+F<sub>n+2</sub> = F<sub>n</sub> + F<sub>n+1</sub>
+<br /><br />
+つまり、直前の2つの値の和が次の値になります。
+たとえば、F<sub>3</sub> = F<sub>2</sub> + F<sub>1</sub> = 1 + 1 = 2, F<sub>4</sub> = F<sub>3</sub> + F<sub>2</sub> = 2 + 1 = 3 です。
+
+<br /><br />
+F<sub>1</sub> から F<sub>20</sub> までのフィボナッチ数列をすべて出力してください（結果は昇順に並べてください）。
+<br />
+なお、フィボナッチ数列を生成する方法はたくさんありますが、<em>WITH RECURSIVE</em> 文を使う方法を試してみてください。
+"""
+en = """
+The Fibonacci sequence is defined as below:
+<br />
+F<sub>1</sub> = 1, F<sub>2</sub> = 1 and for n > 2,
+<br />
+F<sub>n+2</sub> = F<sub>n</sub> + F<sub>n+1</sub>
+<br /><br />
+I.e., the sum of the last two elements is the next number.
+For example, F<sub>3</sub> = F<sub>2</sub> + F<sub>1</sub> = 1 + 1 = 2$, and F<sub>4</sub> = F<sub>3</sub> + F<sub>2</sub> = 2 + 1 = 3.
+<br /><br />
+Please generate the Fibonacci sequence from F<sub>1</sub> to F<sub>20</sub> (sort the result in the ascending order).
+<br />
+Although there are many ways to generate the Fibonacci numbers, please try generating them using the <em>WITH RECURSIVE</em> syntax.
+"""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+WITH RECURSIVE の開始データは以下のように記載することで存在するテーブルを参照しなくても実行できます。<br />
+<pre class="sql-code">
+  select
+    idx
+    ,val1
+    ,val2
+    ,fibonacci_number
+  from
+    ( select
+       1 as idx
+      ,0(integer) as val1
+      ,0(integer) as val2
+      ,1(integer) as fibonacci_number
+    ) as root
+</pre>
+"""
+en = """
+By describing the start data of WITH RECURSIVE as follows, it can be executed without referring to the existing table.<br />
+<pre class="sql-code">
+  select
+    idx
+    ,val1
+    ,val2
+    ,fibonacci_number
+  from
+    ( select
+       1 as idx
+      ,0(integer) as val1
+      ,0(integer) as val2
+      ,1(integer) as fibonacci_number
+    ) as root
+</pre>
+"""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false  # クエリ結果の行列数の一致を求めるか
+shape = [1, 2]      # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = true     # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+fibonacci_number
+1
+1
+2
+3
+5
+8
+13
+21
+34
+55
+89
+144
+233
+377
+610
+987
+1597
+2584
+4181
+6765
+"""
+
+query = """
+with recursive rec_tmp ( idx, val1, val2, fibonacci_number) as (
+  select
+    idx
+    ,val1
+    ,val2
+    ,fibonacci_number
+  from
+    ( select
+       1 as idx
+      ,0(integer) as val1
+      ,0(integer) as val2
+      ,1(integer) as fibonacci_number
+    ) as root
+  union all
+  select
+    idx + 1 as idx
+    ,val2
+    ,fibonacci_number
+    ,val2 + fibonacci_number
+  from
+    rec_tmp 
+  where
+    idx < 20
+)
+select fibonacci_number from
+  rec_tmp;
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

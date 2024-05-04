@@ -1,0 +1,83 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000207"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "Window関数", "SUM() OVER()", "AVG() OVER()"
+]
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = """顧客ごとの各購買における購入金額と累積合計/平均および移動合計/平均"""
+en = """Purchase amounts and cumulative totals/average and moving totals/average for each purchase per customer"""
+
+[content]
+ja = """<em>Terashirt.store_sales</em> テーブルには、顧客ごとの商品購入履歴データが含まれています。
+各顧客ごとに1回あたりの購買における合計金額を算出し、累積の購入金額合計と前後1回分の購買履歴を含めた計3回分の購買における合計購入金額を求めてください。
+また、累積の購入金額平均と前後1回分の購買履歴を含めた計3回分の購買における購入金額平均も求めてください。
+なお、顧客IDがnullのデータは集計対象から除外すること。"""
+en = """The <em>Terashirt.store_sales</em> table contains purchase history data for each customer.
+Calculate the total purchase price per purchase for each customer, and find the total purchase price for a total of three purchases, including the cumulative total purchase price and the purchase history of one purchase before and after the purchase.
+Also, find the average purchase amount for the three purchases, including the average cumulative purchase amount and the purchase history for the one purchase before and after the purchase.
+Note that data with a null customer ID should be excluded from the total."""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = ""
+en = ""
+
+# 参考文献、ウェブサイト (HTMLコードを直接書く)
+# 不要なら空文字列にする
+[references]
+ja = ""
+en = ""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true  # クエリ結果の行列数の一致を求めるか
+shape = [733, 8]      # 想定されたクエリ結果のサイズ
+
+check_type = false         # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "query"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+
+query = """
+select
+customer_id
+,purchase_date
+,purchase_timestamp
+,total_sales_value
+,sum(total_sales_value) over(partition by customer_id order by purchase_timestamp rows between unbounded preceding and current row) as "金額累積合計"
+,sum(total_sales_value) over(partition by customer_id order by purchase_timestamp rows between 1 preceding and 1 following) as "金額移動合計"
+,avg(total_sales_value) over(partition by customer_id order by purchase_timestamp rows between unbounded preceding and current row) as "金額累積平均"
+,avg(total_sales_value) over(partition by customer_id order by purchase_timestamp rows between 1 preceding and 1 following) as "金額移動平均"
+from (
+	select
+	customer_id
+	,purchase_date
+	,purchase_timestamp
+	,sum(sales_value) as total_sales_value
+	from store_sales 
+	where customer_id is not null
+	group by 1,2,3
+) a1
+order by 1,3;
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

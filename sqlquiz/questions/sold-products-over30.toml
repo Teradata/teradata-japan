@@ -1,0 +1,75 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000115"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "aggregation",
+  "conditional-expression"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "30個以上売り上げた商品"
+en = "Sold products of which the total quantity is 30 or more"
+
+[content]
+ja = """<em>TeraShirt.store_sales</em> テーブルには、TeraShirt社の売上の情報が格納されています。
+商品の売上個数を集計し、合計30個以上売り上げた商品のIDと個数を表示してください。
+"""
+en = """<em>TeraShirt.store_sales</em> table stores the information of sales of the TeraShirt company.
+Aggregate the quantity of sold products and show the product ID and total quantity which is 30 or more.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [8, 2]             # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "int" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+product_id,quantity
+14,31
+32,35
+59,30
+66,32
+74,35
+89,35
+95,32
+110,32
+"""
+
+query = """
+SELECT
+  product_id, SUM(quantity) AS quantity
+FROM
+  terashirt.store_sales
+GROUP BY 1
+HAVING SUM(quantity) >= 30
+"""
+
+check_explain = false

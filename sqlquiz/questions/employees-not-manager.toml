@@ -1,0 +1,80 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000114"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "set-operator"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "上司ではない従業員"
+en = "Employees who are not the manager"
+
+[content]
+ja = """<em>TeraShirt.employee</em> テーブルには、TeraShirt社の従業員の情報が格納されています。
+このうち、上司ではない従業員のID、姓、名を表示してください。
+なお、クエリは集合演算子を用いて実行してください。
+"""
+en = """<em>TeraShirt.employee</em> table stores the information of employees in the TeraShirt company.
+Show the ID, last name and first name of employees who are not the manager.
+When executing the query, please use the set operator.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [12, 3]            # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str", "str" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+employee_id,last_name,first_name
+1,ブラウン,グリフィン
+2,ベルガモ,ジョバンニ
+4,高橋,大介
+6,小川,博
+7,臼井,努
+8,高岡,和弘
+9,鈴木,あゆみ
+10,長谷川,茜
+11,井上,栞
+12,望月,千春
+14,梶山,美紀
+15,中村,史子
+"""
+
+query = """
+SELECT
+  employee_id, last_name, first_name
+FROM
+  TeraShirt.employee
+WHERE
+  employee_id NOT IN ( SELECT report_to FROM TeraShirt.employee )
+"""
+
+check_explain = false

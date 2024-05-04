@@ -1,0 +1,99 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000030"  # カテゴリのはじめの問題にふさわしくないので大きめにしておく。
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "date", "filtering", "performance"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = "最近の休日"
+en = "Recent Holidays"
+
+[content]
+ja = """<em>japan.japan_holidays</em> テーブルには、1955年以降の日本の祝日の情報が格納されています。
+このテーブルを用いて、あなたは今日を含む直近50日間の休日一覧を出力しようとしています。そのため、あなたは次のクエリを考えました。
+<pre class="sql-code">
+SELECT
+  calendar_date, holiday_name
+FROM
+  japan.japan_holidays
+WHERE
+  CAST(CURRENT_TIMESTAMP AS DATE) - calendar_date BETWEEN 0 AND 49
+</pre>
+このクエリは正しい結果を返すものの、効率性の面で最善ではありません。
+これと同じ結果をもたらすより効率的なクエリを考えてください。
+"""
+en = """<em>japan.japan_holidays</em> table stores the Japan's national holidays since 1955.
+You are trying to display the list of all holidays in the past 50 days, including today.
+To do so, you have submitted the following query:
+<pre class="sql-code">
+SELECT
+  calendar_date, holiday_name
+FROM
+  japan.japan_holidays
+WHERE
+  CAST(CURRENT_TIMESTAMP AS DATE) - calendar_date BETWEEN 0 AND 49
+</pre>
+While this query returns the correct outcome, it is not ideal for the query performance.
+Please submit a more efficient query that returns the identical output.
+"""
+
+
+[hint]
+ja = """
+<code>SHOW TABLE</code> を使って、テーブルのDDLを確認してみてください。
+効率化のためのヒントが得られるかもしれません。
+"""
+en = """
+Try <code>SHOW TABLE</code> and check the DDL of the target table.
+There might be some hit for improving the efficiency.
+"""
+
+[references]
+ja = """
+"""
+en = """
+"""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false         # クエリ結果の行列数の一致を求めるか
+#shape = [2, 2]             # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+#types = [ "int", "str" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false             # クエリ結果の並び順が指定されているかどうか
+value_from = "query"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+# csv = """
+# year,date
+# 2006,04/29
+# 2007,05/04
+# """
+query = """
+SELECT
+  calendar_date, holiday_name
+FROM
+  japan.japan_holidays
+WHERE
+  calendar_date BETWEEN
+    CAST(CURRENT_TIMESTAMP AS DATE) - INTERVAL '49' DAY AND
+    CAST(CURRENT_TIMESTAMP AS DATE)
+"""
+
+check_explain = true
+explain_should_include = ["partitions of"]
+explain_should_not_include = ["all-rows scan"]

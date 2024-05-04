@@ -1,0 +1,69 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000106"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "arithmetic-operator",
+  "date",
+  "math"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "従業員の年齢"
+en = "The age of employees"
+
+[content]
+ja = """<em>TeraShirt.employee</em> テーブルには、TeraShirt社の従業員の情報が格納されています。
+従業員の誕生日から、現在の年齢を計算し、従業員のID、姓、名及び年齢を表示してください。
+ただし、簡単化のため、ここでは<em>365日で1つ歳をとる</em>と仮定してください。
+"""
+en = """<em>TeraShirt.employee</em> table stores the information of employees in the TeraShirt company.
+Calculate the current age of employees using the birthday and show the employee ID, last name, first name and age.
+For simplicity, please assume that a person "gains one year in 365 days".
+"""
+
+
+[hint]
+ja = "年齢は誕生日と現在の日付の差分で求まります。"
+en = "You can calculate the age as the difference of the birthday and the current date."
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [15, 4]            # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str", "str", "int" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "query"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+#csv = 
+query = """
+SELECT
+  employee_id
+  ,last_name
+  ,first_name
+  ,(CURRENT_DATE - birthday) / 365 AS age
+FROM
+  TeraShirt.employee
+"""
+# CURRENT_DATEは変化するので、動的に取得する
+
+check_explain = false

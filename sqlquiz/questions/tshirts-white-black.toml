@@ -1,0 +1,96 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000103"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "logical-operator"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "白または黒のTシャツ"
+en = "White or black t-shirts"
+
+[content]
+ja = """<em>TeraShirt.product</em> テーブルには、TeraShirt社の商品の情報が格納されています。
+白または黒のTシャツの商品IDと商品名を表示してください。
+"""
+en = """<em>TeraShirt.product</em> table stores the information of products of the TeraShirt company.
+Show the product ID and name of white or black t-shirts.
+"""
+
+
+[hint]
+ja = "type列で商品の種類が分かります。"
+en = "The <em>type</em> column shows the kind of products."
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [30, 2]            # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+product_id,name
+16,"Tシャツ (Men, XS, white)"
+17,"Tシャツ (Women, XS, white)"
+18,"Tシャツ (Kids, XS, white)"
+19,"Tシャツ (Men, S, white)"
+20,"Tシャツ (Women, S, white)"
+21,"Tシャツ (Kids, S, white)"
+22,"Tシャツ (Men, M, white)"
+23,"Tシャツ (Women, M, white)"
+24,"Tシャツ (Kids, M, white)"
+25,"Tシャツ (Men, L, white)"
+26,"Tシャツ (Women, L, white)"
+27,"Tシャツ (Kids, L, white)"
+28,"Tシャツ (Men, XL, white)"
+29,"Tシャツ (Women, XL, white)"
+30,"Tシャツ (Kids, XL, white)"
+31,"Tシャツ (Men, XS, black)"
+32,"Tシャツ (Women, XS, black)"
+33,"Tシャツ (Kids, XS, black)"
+34,"Tシャツ (Men, S, black)"
+35,"Tシャツ (Women, S, black)"
+36,"Tシャツ (Kids, S, black)"
+37,"Tシャツ (Men, M, black)"
+38,"Tシャツ (Women, M, black)"
+39,"Tシャツ (Kids, M, black)"
+40,"Tシャツ (Men, L, black)"
+41,"Tシャツ (Women, L, black)"
+42,"Tシャツ (Kids, L, black)"
+43,"Tシャツ (Men, XL, black)"
+44,"Tシャツ (Women, XL, black)"
+45,"Tシャツ (Kids, XL, black)"
+"""
+query = """
+SELECT
+  product_id, name
+FROM
+  TeraShirt.product a
+WHERE
+  color IN ('black', 'white')
+  AND "type" = 'tshirt'
+"""
+
+check_explain = false

@@ -1,0 +1,81 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000104"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "logical-operator",
+  "missing-value"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "誕生日が欠損している顧客"
+en = "Customers without birthday"
+
+[content]
+ja = """<em>TeraShirt.customer</em> テーブルには、TeraShirt社の顧客の情報が格納されています。
+誕生日が欠損している顧客のID、姓、名を表示してください。
+"""
+en = """<em>TeraShirt.customer</em> table stores the information of customers of the TeraShirt company.
+Show the ID, last name and first name of customers whose birthday is null.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [12, 3]            # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str", "str" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+customer_id,last_name,first_name
+13,原,麻希
+23,山岡,葉子
+37,筒井,礼奈
+44,國政,知子
+53,安井,麻未
+55,中田,唯那
+66,岩崎,学
+75,安藤,遼
+99,安田,寿彦
+102,松田,英克
+103,笹山,賢治
+113,窪園,進
+"""
+
+query = """
+SELECT
+  customer_id,
+  last_name,
+  first_name
+FROM
+  TeraShirt.customer
+WHERE
+  birthday IS NULL
+"""
+
+check_explain = false

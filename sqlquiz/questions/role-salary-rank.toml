@@ -1,0 +1,82 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000117"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "sort"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "役職ごとの給与の順位"
+en = "Ranking of the salary by the role"
+
+[content]
+ja = """<em>TeraShirt.employee</em> テーブルには、TeraShirt社の従業員の情報が格納されています。
+従業員の給与について、役職ごとに高い順で順位付けし、役職、姓、名、給与及び順位を表示してください。
+"""
+en = """<em>TeraShirt.employee</em> table stores the information of employees in the TeraShirt company.
+Rank the salary by the role in descending order and show the role, last name, first name, salary and ranking.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [15, 5]            # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "str", "str", "str", "int", "int" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+role,last_name,first_name,salary,rank
+デザイナー,高橋,大介,7910900,1
+デザイナー,ベルガモ,ジョバンニ,7595000,2
+デザイナー,鈴木,あゆみ,5906900,3
+デザイナー,ブラウン,グリフィン,5112200,4
+商品企画,内藤,沙耶,5874800,1
+店舗スタッフ,高岡,和弘,7663100,1
+店舗スタッフ,梶山,美紀,7477500,2
+店舗スタッフ,望月,千春,7458100,3
+店舗スタッフ,長谷川,茜,7204100,4
+店舗スタッフ,井上,栞,6778800,5
+店舗スタッフ,臼井,努,5678000,6
+店舗スタッフ,中村,史子,5013500,7
+店舗スタッフ,小川,博,4928600,8
+店舗管理,渡辺,拓也,6767200,1
+店舗管理,クーパー,ブレンダ,5293500,2
+"""
+query = """
+SELECT
+  "role",
+  last_name,
+  first_name,
+  salary,
+  RANK() OVER (PARTITION BY "role" ORDER BY salary DESC) AS "rank"
+FROM
+  TeraShirt.employee
+"""
+
+check_explain = false

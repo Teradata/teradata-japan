@@ -8,8 +8,8 @@
 
 ## コンテンツ紹介
 
-- [Tutorial](./tutorial/): テラデータの基本的な使い方を紹介しています。インターフェイス言語には主にPythonを採用しています。
-
+- [Tutorial](./tutorial/): Teradataの基本的な使い方を紹介しています。インターフェイス言語には主にPythonを採用しています。
+- [SQL Quiz](./sqlquiz): SQLの練習問題を解くことができます。一般的なクエリからTeradata独自の構文まで幅広いトピックをカバーしています。
 
 ## ClearScape Analytics Experience (お試し環境) の始め方
 

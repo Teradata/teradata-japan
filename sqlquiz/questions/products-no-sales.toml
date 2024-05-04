@@ -1,0 +1,71 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000108"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "logical-operator"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "売上の無い商品"
+en = "No sales products"
+
+[content]
+ja = """<em>TeraShirt.product</em> テーブルには、TeraShirt社の商品の情報が、
+<em>TeraShirt.store_sales</em> テーブルには、売上の情報が格納されています。<br />
+これらのテーブルを用いて、売上記録の無い商品が存在するか調べてください。
+存在する場合は文字列の'YES'を出力し、存在しない場合は何も出力しないこと。
+"""
+en = """<em>TeraShirt.product</em> table stores the information of products of the TeraShirt company, and
+<em>TeraShirt.store_sales</em> table stores the information of its sales.<br />
+Using these tables, check whether there are products with no sales recorded.
+If yes, the output should be the string 'YES'.
+Otherwise the output should be nothing.
+"""
+
+
+[hint]
+ja = "売上が無いということは、その商品が <em>TeraShirt.store_sales</em> テーブルに表れないということです。"
+en = "No sales means that the product doesn't appear in <em>TeraShirt.store_sales</em> table."
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [0, 1]             # 想定されたクエリ結果のサイズ
+
+check_type = false         # クエリ結果の列の型の一致を求めるか
+#types = []                # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+result
+"""
+# 売上の無い商品が存在しない=出力無しなので、列名のみ
+query = """
+SELECT DISTINCT
+  'YES'
+FROM
+  TeraShirt.product
+WHERE
+  product_id NOT IN ( SELECT product_id FROM TeraShirt.store_sales)
+"""
+
+check_explain = false

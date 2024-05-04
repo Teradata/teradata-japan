@@ -1,0 +1,91 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q0010010"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "geospatial"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "地理空間情報の分析"
+en = "Geospatial Information Analysis"
+
+[title]
+ja = """最果ての駅"""
+en = """Stations at ends"""
+
+[content]
+ja = """
+日本最北端、最南端、最西端、最東端の駅はどこですか？
+"""
+en = """
+What are the northmost, southmost, westmost, and eastmost stations in Japan?
+"""
+
+
+# ヒントなしで
+[hint]
+ja = """
+<ul>
+<li><em>ST_X, ST_Y</em> を調べてみてください。
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods" rel="noopener noreferrer" target="_blank">Geometry methods (マニュアル)</a>
+<li><a href="https://tabi-mag.jp/station-news/" rel="noopener noreferrer" target="_blank">よければ解いた後に</a>
+</ul>
+
+"""
+en = """
+<ul>
+<li>Check out <em>ST_X, ST_Y</em>.
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods" rel="noopener noreferrer" target="_blank">Geometry methods (manual)</a>
+<li><a href="https://tabi-mag.jp/station-news/" rel="noopener noreferrer" target="_blank">Maybe after you solve this!</a>
+</ul>
+"""
+
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false         # クエリ結果の行列数の一致を求めるか
+shape = [1, 1]             # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+#types = [ "int" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = true             # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+northmost,southmost,westmost,eastmost
+稚内,赤嶺,東根室,那覇空港
+"""
+
+query = """
+with ends AS (
+  SELECT
+    MIN(geometry.ST_X()) AS east_end,
+    MAX(geometry.ST_X()) AS west_end,
+    MIN(geometry.ST_Y()) AS south_end,
+    MAX(geometry.ST_Y()) AS north_end
+  FROM
+    facilities.stations
+)
+SELECT
+  north.station_name AS northmost,
+  south.station_name AS southmost,
+  west.station_name AS westmost,
+  east.station_name AS eastmost
+FROM
+  ends
+  INNER JOIN facilities.stations AS east ON east.geometry.ST_X() = ends.east_end
+  INNER JOIN facilities.stations AS west ON west.geometry.ST_X() = ends.west_end
+  INNER JOIN facilities.stations AS north ON north.geometry.ST_Y() = ends.north_end
+  INNER JOIN facilities.stations AS south ON south.geometry.ST_Y() = ends.south_end
+"""
+
+check_explain = false

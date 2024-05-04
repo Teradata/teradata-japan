@@ -1,0 +1,78 @@
+qid = "q0000311"
+
+tags = [
+  "filter"
+]
+
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = """
+クーパーさんの部下
+"""
+en = """
+Reporters
+"""
+
+[content]
+ja = """
+TeraShirt社の社員のうち、ブレンダ・クーパーさんの部下を抽出し、その名字と名前を出力してください。
+"""
+en = """
+Find the TeraShirt employees who reports to "ブレンダ・クーパー", and display the last name and first name. 
+"""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+"""
+en = """
+"""
+
+# 参考文献、ウェブサイト (HTMLコードを直接書く)
+# 不要なら空文字列にする
+[references]
+ja = """
+"""
+en = """
+"""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true  # クエリ結果の行列数の一致を求めるか
+shape = [4, 2]      # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+# types = [  ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+last_name,first_name
+梶山,美紀
+臼井,努
+高岡,和弘
+望月,千春
+"""
+
+query = """
+SELECT
+  last_name, first_name
+FROM
+  TeraShirt.employee
+WHERE
+  report_to IN (
+    SELECT employee_id FROM TeraShirt.employee WHERE first_name = 'ブレンダ' AND last_name = 'クーパー')
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト
+
+
