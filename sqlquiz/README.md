@@ -14,15 +14,15 @@
 
 **TeraShirt データベース**
 
-<image src="./images/Diagram_TeraShirt.png" width="400">
+<image src="./images/Diagram_TeraShirt.png" width="600">
 
 **facilities データベース**
 
-<image src="./images/Diagram_facilities.png" width="400">
+<image src="./images/Diagram_facilities.png" width="600">
 
 **japan データベース**
 
-<image src="./images/Diagram_japan.png" width="400">
+<image src="./images/Diagram_japan.png" width="600">
 
 
 ### Enjoy SQL!
