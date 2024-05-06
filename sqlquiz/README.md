@@ -18,7 +18,7 @@
 
 **facilities データベース**
 
-<image src="./images/Diagram_facilities.png" width="600">
+<image src="./images/Diagram_facilities.png" width="500">
 
 **japan データベース**
 
