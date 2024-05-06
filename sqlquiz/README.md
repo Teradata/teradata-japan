@@ -9,4 +9,20 @@
 1. 問題文の下の `▶ Hint` や `▶ Answer` をクリックするとヒントや想定解の１つが表示されます。
 1. `en-` から始まるノートブックは問題文を英語にしたものです。ただしデータは日本語を含みます。
 
-**Enjoy SQL!**
+
+## 問題で使用するデータ
+
+**TeraShirt データベース**
+
+<image src="./images/Diagram_TeraShirt.png" width="400">
+
+**facilities データベース**
+
+<image src="./images/Diagram_facilities.png" width="400">
+
+**japan データベース**
+
+<image src="./images/Diagram_japan.png" width="400">
+
+
+### Enjoy SQL!
