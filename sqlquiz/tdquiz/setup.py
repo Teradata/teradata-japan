@@ -9,7 +9,7 @@ with open(readmefile) as f:
 
 setup(
     name='tdquiz',
-    version='0.0.1',
+    version='0.0.2',
     description='Teradata SQL Quiz',
     author='Kota Mori', 
     author_email='kota.mori@teradata.com',
@@ -17,5 +17,5 @@ setup(
     long_description_content_type='text/markdown',
     
     py_modules=['tdquiz'],
-    install_requires=['teradatasql', 'teradatasqlalchemy', 'toml', 'IPython', 'tqdm', 'pandas', 'sqlalchemy>=2']
+    install_requires=['teradatasql', 'toml', 'IPython', 'tqdm', 'pandas']
 )

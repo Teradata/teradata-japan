@@ -562,6 +562,7 @@ class TdquizMagic(Magics, Configurable):
         if self.params is None or any(key not in self.params for key in ["host", "user", "password"]):
             with open(self.param_file) as f:
                 self.params = json.load(f)
+
         with teradatasql.connect(**self.params) as conn:
             c = conn.cursor()
             c.execute(query)
