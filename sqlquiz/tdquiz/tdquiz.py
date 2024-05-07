@@ -577,7 +577,7 @@ class TdquizMagic(Magics, Configurable):
         connstr = _make_connection_string(**self.params)
         engine = sqlalchemy.create_engine(connstr)
         with engine.connect() as conn:
-            res = pd.read_sql(sqlalchemy.text(query), conn)
+            res = pd.read_sql(sqlalchemy.text(query), conn.connection)
             # ref. https://stackoverflow.com/questions/69490450/objectnotexecutableerror-when-executing-any-sql-query-using-asyncengine
         return res
 
