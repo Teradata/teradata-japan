@@ -13,7 +13,6 @@ from urllib.parse import quote_plus, urlencode
 import teradatasql
 import toml
 import pandas as pd
-import sqlalchemy
 from tqdm import tqdm
 from IPython.core.magic import Magics, line_cell_magic, magics_class
 try:
@@ -542,17 +541,6 @@ def setup_tdquiz(datadir="./data", verbose=True, param_file="_connect-info.json"
         print("We are ready!")
 
 
-def _make_connection_string(**tdparams):
-    host = tdparams.pop("host")
-    user = tdparams.pop("user")
-    password = quote_plus(tdparams.pop("password"))
-    connstr = (
-        f"teradatasql://{user}:{password}@{host}/?" +
-        urlencode(tdparams)
-    )
-    return connstr
-
-
 @magics_class
 class TdquizMagic(Magics, Configurable):
     params = Dict(
@@ -574,11 +562,11 @@ class TdquizMagic(Magics, Configurable):
         if self.params is None or any(key not in self.params for key in ["host", "user", "password"]):
             with open(self.param_file) as f:
                 self.params = json.load(f)
-        connstr = _make_connection_string(**self.params)
-        engine = sqlalchemy.create_engine(connstr)
-        with engine.connect() as conn:
-            res = pd.read_sql(sqlalchemy.text(query), conn)
-            # ref. https://stackoverflow.com/questions/69490450/objectnotexecutableerror-when-executing-any-sql-query-using-asyncengine
+        with teradatasql.connect(**self.params) as conn:
+            c = conn.cursor()
+            c.execute(query)
+            columns = [d[0] for d in c.description]  # header
+            res = pd.DataFrame(c, columns=columns)
         return res
 
 
