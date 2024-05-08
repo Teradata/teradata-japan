@@ -1,0 +1,78 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000001"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "geospatial", "distance"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "地理空間情報の分析"
+en = "Geospatial Information Analysis"
+
+[title]
+ja = """２つのオフィス間の距離"""
+en = """Distance between two Offices"""
+
+[content]
+ja = """<em>facilities.teradata_offices</em> テーブルには、Teradata社のオフィスの所在地情報が格納されています。そのうち２つは日本のオフィスです。
+これら２つのオフィス間の距離を km 単位で計算してください。
+ただし、距離計算には<a href="https://ja.wikipedia.org/wiki/%E5%A4%A7%E5%86%86%E8%B7%9D%E9%9B%A2" rel="noopener noreferrer" target="_blank">大円距離公式</a>を用いること。
+"""
+en = """<em>facilities.teradata_offices</em> table stores the locations of Teradata offices.
+Two of them are in Japan.
+Calculate the distance between the two Japan offices in kilometers.
+Note that we use the <a href="https://en.wikipedia.org/wiki/Great-circle_distance" rel="noopener noreferrer" target="_blank">Great-cirle distance formula</a> for this calculation.
+"""
+
+
+# ヒントなしで
+[hint]
+ja = """
+<ul>
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types-17.20/ST_Point-Methods/ST_SphericalDistance" rel="noopener noreferrer" target="_blank">Geospatial Data Types (マニュアル)</a>
+</ul>
+"""
+en = """
+<ul>
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types-17.20/ST_Point-Methods/ST_SphericalDistance" rel="noopener noreferrer" target="_blank">Geospatial Data Types (manual)</a>
+</ul>
+"""
+
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [1, 1]             # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+#types = [ "int" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = true             # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+distance_km
+400.566329
+"""
+
+query = """
+SELECT
+  (NEW ST_Geometry('ST_Point', a.longitude, a.latitude)).ST_SphericalDistance(
+    NEW ST_Geometry('ST_Point', b.longitude, b.latitude)) / 1000 AS distance_km
+FROM
+  facilities.teradata_offices AS a
+  INNER JOIN facilities.teradata_offices AS b
+    ON a.office_name < b.office_name
+       AND a.country = 'jpn'
+       AND b.country = 'jpn'
+"""
+
+check_explain = false

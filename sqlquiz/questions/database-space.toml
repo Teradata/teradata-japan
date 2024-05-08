@@ -1,0 +1,96 @@
+# これは問題定義のテンプレートファイルです。実際には問題文に含まれません。
+# ファイル名はある程度概要がわかるものをつけます。
+
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00004000"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "teradata-specific",
+  "size"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = """
+データベースの残り容量
+"""
+en = """
+Remaining space in the database
+"""
+
+[content]
+ja = """
+<em>TeraShirt</em>, <em>japan</em> データベースについて、そのディスク容量の総量、すでに使われている容量、残ったスペースの割合 (%) を計算してください。
+結果は データベース名、ディスク総容量 (MB), 使用済みディスク容量 (MB), 残ったスペースの割合 (%) の順に、それぞれ小数点以下第1位まで表示してください。
+ここでは、1MB = 1024*1024B とします。
+"""
+en = """
+Calculate the total space, the used space, and the fraction of remaining space of <em>TeraShirt</em> and <em>japan</em> databases.
+Show the database name, total space in MB, used space in MB, and the fraction of remaining space (%) in the result set, all columns up to the first decimap space.
+Assume that 1MB = 1024*1024B.
+"""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+データベースの容量は、<em>DBC.DiskSpaceV</em> に保持されています。
+"""
+en = """
+Disk spaces of databases are stored in <em>DBC.DiskSpaceV</em>.
+"""
+
+# 参考文献、ウェブサイト (HTMLコードを直接書く)
+# 不要なら空文字列にする
+[references]
+ja = """
+"""
+en = """
+"""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false  # クエリ結果の行列数の一致を求めるか
+shape = [1, 2]      # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "query"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+# csv = """
+# x,y
+# 1,test
+# """
+
+# value_from=csvなので、これは不要だが、例として示す
+# 実際には、定義しないのが良い
+query = """
+SELECT
+  databaseName,
+  SUM(1.0 * maxPerm)/1024/1024 AS total_space,
+  SUM(1.0 * currentPerm)/1024/1024 AS used_space,
+  (1 - SUM(1.000 * currentPerm)/SUM(1.000 * maxPerm)) * 100 AS remain_percent
+FROM
+  dbc.diskSpaceV
+WHERE
+  databaseName IN ('japan', 'TeraShirt')
+GROUP BY 1
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

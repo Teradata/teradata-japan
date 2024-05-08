@@ -1,0 +1,83 @@
+# これは問題定義のテンプレートファイルです。実際には問題文に含まれません。
+# ファイル名はある程度概要がわかるものをつけます。
+
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00001150"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "teradata-specific",
+  "ddl"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = """
+ビューの定義
+"""
+en = """
+View definition
+"""
+
+[content]
+ja = """
+<em>dbc.databasesV</em> のビュー定義 (DDL) を表示してください。
+"""
+en = """
+Show the definition of the <em>dbc.databasesV</em> view.
+"""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+<em>SHOW VIEW</em> 文を考えます。
+"""
+en = """
+Think about <em>SHOW VIEW</em> syntax.
+"""
+
+# 参考文献、ウェブサイト (HTMLコードを直接書く)
+# 不要なら空文字列にする
+[references]
+ja = """
+"""
+en = """
+"""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true  # クエリ結果の行列数の一致を求めるか
+shape = [1, 1]      # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "query"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+# csv = """
+# x,y
+# 1,test
+# """
+
+# value_from=csvなので、これは不要だが、例として示す
+# 実際には、定義しないのが良い
+query = """
+SHOW VIEW dbc.databasesV
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

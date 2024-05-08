@@ -1,0 +1,41 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "purchase_date",
+  "purchase_timestamp",
+  "store_id",
+  "customer_id",
+  "cashier_id",
+  "product_id",
+  "unit_price",
+  "discount",
+  "quantity",
+  "sales_value"
+]
+
+column_types = [
+  "DATE",
+  "TIMESTAMP(0) WITH TIME ZONE",
+  "INTEGER",
+  "INTEGER",
+  "INTEGER",
+  "INTEGER",
+  "INTEGER",
+  "INTEGER",
+  "INTEGER",
+  "INTEGER"
+]
+geometry_columns = []
+geometry_epsg = []  # EPSG指定なしならNone
+
+primary_index = ["customer_id", "product_id", "purchase_date"]
+secondary_index = [
+]
+partition_by = [ 
+  """RANGE_N(purchase_date BETWEEN DATE'2021-05-01' AND DATE'2022-12-31' EACH INTERVAL '1' DAY)"""
+]
+
+no_fastload = true  # fastload will skip duplicate rows, so do not use it!

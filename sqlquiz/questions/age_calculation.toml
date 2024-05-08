@@ -1,0 +1,73 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000203"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "date",
+  "cast"
+]
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = """年齢の計算"""
+en = """Calculation of Age"""
+
+[content]
+ja = """<em>Terashirt.customer</em> テーブルには、Terashirtの会員の誕生日と会員登録日のデータが含まれています。
+各会員ごとに会員登録時の年齢と現在の年齢を計算してください。
+なお、誕生日が不明の場合は、年齢は欠損 (null) としてください。"""
+en = """The <em>Terashirt.customer</em> table contains data on Terashirt members' birthdays and membership registration dates.
+For each member, calculate the member's age at registration and current age.
+Note that if the birthday is missing, set the age as missing (null) as well."""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+日付型を整数に変換すると？
+"""
+en = """
+What would happen if you cast a DATE variable to INTEGER?
+"""
+
+# 参考文献、ウェブサイト (HTMLコードを直接書く)
+# 不要なら空文字列にする
+[references]
+ja = ""
+en = ""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true  # クエリ結果の行列数の一致を求めるか
+shape = [118, 3]      # 想定されたクエリ結果のサイズ
+
+check_type = false         # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "query"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+
+query = """
+SELECT
+  customer_id
+  ,floor((cast(register_date as integer) + 19000000) - (cast(birthday as integer) + 19000000)) / 10000 as "会員登録時年齢"
+  ,floor((cast(current_date as integer) + 19000000) - (cast(birthday as integer) + 19000000)) / 10000 as "現在年齢"
+FROM
+  TeraShirt.customer
+ORDER BY 1;
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

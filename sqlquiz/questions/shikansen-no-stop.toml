@@ -1,0 +1,127 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q0010100"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "geospatial", "join"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "地理空間情報の分析"
+en = "Geospatial Information Analysis"
+
+[title]
+ja = """新幹線が止まらない都道府県"""
+en = """Prefectures where shinkansen passes through"""
+
+[content]
+ja = """
+都道府県のうち新幹線が通るものを抽出し、その停車駅の数を計算してください。通過するだけで停車はしない都道府県ははありますか？
+結果は 都道府県名と新幹線駅の数として、駅の数と都道府県名について降順に並べてください。
+"""
+en = """
+Extract prefectures where shinkansen visits, and calculate the number of shinkansen station in them.
+Are there any prefectures where shinkansen just passes through with stopping on no station?
+Display the prefecture name and the number of shinkansen stations, sorted by the number of the stations and the prefecture name.
+"""
+
+
+# ヒントなしで
+[hint]
+ja = """
+<ul>
+<li><em>japan.cities</em>, <em>facilities.stations</em>, <em>facilities.shinkansen</em>
+<li>図形が「含まれている」に該当する関数は？
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods" rel="noopener noreferrer" target="_blank">Geometry methods (マニュアル)</a>
+<li><a href="https://news.mynavi.jp/article/trivia-435/" rel="noopener noreferrer" target="_blank">よければ解いた後に</a>
+</ul>
+"""
+en = """
+<ul>
+<li><em>japan.cities</em>, <em>facilities.stations</em>, <em>facilities.shinkansen</em>
+<li>What method would be relevant for geometries being contained?
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods" rel="noopener noreferrer" target="_blank">Geometry methods (manual)</a>
+<li><a href="https://news.mynavi.jp/article/trivia-435/" rel="noopener noreferrer" target="_blank">Maybe after you solve the question!</a>
+</ul>
+"""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false         # クエリ結果の行列数の一致を求めるか
+shape = [1, 1]             # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+#types = [ "int" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = true             # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+pref_name,num_stations
+茨城県,0
+京都府,1
+佐賀県,1
+岐阜県,1
+滋賀県,1
+石川県,1
+北海道,2
+大阪府,2
+岡山県,2
+神奈川県,2
+富山県,3
+愛知県,3
+栃木県,3
+福島県,3
+鹿児島県,3
+兵庫県,4
+埼玉県,4
+宮城県,4
+東京都,4
+熊本県,4
+群馬県,4
+山口県,5
+広島県,5
+長野県,5
+青森県,5
+福岡県,6
+静岡県,6
+岩手県,7
+新潟県,8
+"""
+
+query = """
+WITH tmp AS (
+  SELECT DISTINCT
+    p.pref_name
+  FROM
+    japan.prefectures AS p
+    INNER JOIN facilities.shinkansen AS s
+      ON p.geometry.ST_INTERSECTS(s.geometry) = 1
+),
+tmp2 AS (
+  SELECT
+    p.pref_name, count(*) AS num_stations
+  FROM
+    facilities.stations AS s
+    INNER JOIN japan.prefectures AS p
+      ON p.geometry.ST_INTERSECTS(s.geometry) = 1
+  WHERE
+    s.line_name IN ( SELECT DISTINCT line_name FROM facilities.shinkansen )
+  GROUP BY 1
+)
+SELECT
+  a.pref_name,
+  COALESCE(b.num_stations, 0) AS num_stations
+FROM
+  tmp AS a LEFT JOIN tmp2 AS b ON a.pref_name = b.pref_name
+ORDER BY 2,1
+"""
+
+check_explain = false

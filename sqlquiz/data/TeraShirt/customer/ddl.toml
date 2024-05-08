@@ -1,0 +1,38 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "customer_id",
+  "last_name",
+  "first_name",
+  "middle_name",
+  "last_name_yomi",
+  "first_name_yomi",
+  "middle_name_yomi",
+  "gender",
+  "birthday",
+  "register_date"
+]
+column_types = [
+  "INTEGER",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET LATIN",
+  "DATE",
+  "DATE"
+]
+geometry_columns = []
+geometry_epsg = []  # EPSG指定なしならNone
+
+primary_index = ["customer_id"]
+secondary_index = [
+]
+partition_by = [ ]
+
+no_fastload = true

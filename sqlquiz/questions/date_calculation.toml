@@ -1,0 +1,67 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00002102"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "date", "trunc"
+]
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = """日付の計算"""
+en = """Date Calculation"""
+
+[content]
+ja = """当月の初日/最終日、前月の初日/最終日、1年前の当月の初日/最終日を取得してください。"""
+en = """Get the first day/last day of the current month, the first day/last day of the previous month, 
+and the first day/last day of the current month one year ago."""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+<ul>
+<li><a href="https://www.docs.teradata.com/r/Teradata-VantageTM-SQL%E3%81%AE%E6%97%A5%E4%BB%98/%E6%99%82%E5%88%BB%E9%96%A2%E6%95%B0%E3%81%A8%E5%BC%8F-17.20/%E6%97%A5%E6%99%82%E3%81%8A%E3%82%88%E3%81%B2%E9%96%93%E9%9A%94%E3%81%AE%E9%96%A2%E6%95%B0%E3%81%A8%E5%BC%8F/TRUNC-%E6%97%A5%E4%BB%98" rel="noopener noreferrer" target="_blank">TRUNC(日付)</a>
+</ul>
+"""
+en = """
+<ul>
+<li><a href="https://www.docs.teradata.com/r/Teradata-VantageTM-SQL-Date-and-Time-Functions-and-Expressions-17.20/DateTime-and-Interval-Functions-and-Expressions/TRUNC-Date" rel="noopener noreferrer" target="_blank">TRUNC(date)</a>
+</ul>
+"""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true  # クエリ結果の行列数の一致を求めるか
+shape = [1, 6]      # 想定されたクエリ結果のサイズ
+
+check_type = false         # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "query"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+
+query = """
+select
+trunc(current_date, 'month') as "当月初日"
+,"当月初日" + interval '1' month - interval '1' day as "当月最終日"
+,"当月初日" - interval '1' month as "前月初日" 
+,"当月初日" - interval '1' day as "前月最終日"
+,"当月初日" - interval '12' month as "前年当月初日"
+,"当月初日" - interval '11' month - interval '1' day as "前年当月最終日" ;
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

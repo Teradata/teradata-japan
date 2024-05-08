@@ -1,0 +1,63 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+#qid = "q00000100"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = []
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# [category]
+# ja = "SQL/Teradata 基礎"
+# en = "SQL/Teradata Basic"
+
+[title]
+ja = "全ての店舗"
+en = "All stores"
+
+[content]
+ja = """<em>TeraShirt.store</em> テーブルには、TeraShirt社の店舗の情報が格納されています。
+このテーブルに含まれるTeraShirt社の店舗情報を全て表示してください（出力は全ての列）。
+"""
+en = """<em>TeraShirt.store</em> table stores the information of stores of the TeraShirt company.
+Show the information of all stores of the TeraShirt company in that table (the output should contain all columns).
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [4, 7]             # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str", "str", "str", "str", "str", "int" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+store_id,name,name_en,region,prefecture,open_date,store_manager
+1,３番通り店,3rd Avenue,関東,東京都,2021-05-01,5
+2,中央駅前店,Central Station,関東,神奈川県,2021-10-23,5
+3,空港第２ターミナル店,千葉県,関東,千葉県,2022-02-05,3
+4,赤坂山アウトレット店,東北,厚本市,宮城県,2022-09-03,3
+"""
+
+query = """
+SELECT * FROM TeraShirt.store
+"""
+
+check_explain = false

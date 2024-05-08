@@ -1,0 +1,37 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "area_code",
+  "pref_code",
+  "city_code",
+  "city_type",
+  "pref_name",
+  "city_name",
+  "population",
+  "household",
+  "area",
+  "geometry"
+]
+column_types = [
+  "INTEGER",
+  "BYTEINT",
+  "SMALLINT",
+  "VARCHAR(15) CHARACTER SET UNICODE",
+  "VARCHAR(5) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "INTEGER",
+  "INTEGER",
+  "FLOAT",
+  "ST_Geometry"
+]
+geometry_columns = ["geometry"]
+geometry_epsg = [4326]  # EPSG指定なしならNone
+
+primary_index = ["area_code"]
+secondary_index = [
+  { columns = ["geometry"], order_by = [], unique = false }
+]
+partition_by = [ "COLUMN" ]

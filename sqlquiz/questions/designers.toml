@@ -1,0 +1,72 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000101"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "comparison-operator"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "デザイン担当の従業員"
+en = "Employees in charge of designing"
+
+[content]
+ja = """<em>TeraShirt.employee</em> テーブルには、TeraShirt社の従業員の情報が格納されています。
+このうち、デザインを担当している従業員のID、姓、名を表示してください。
+"""
+en = """<em>TeraShirt.employee</em> table stores the information of employees in the TeraShirt company.
+Show the ID, last name and first name of employees in charge of designing.
+"""
+
+
+[hint]
+ja = "<em>role</em> 列を確認してください。"
+en = "Check the <em>role</em> column."
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [4, 3]             # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str", "str" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+employee_id,last_name,first_name
+1,ブラウン,グリフィン
+2,ベルガモ,ジョバンニ
+4,高橋,大介
+9,鈴木,あゆみ
+"""
+
+query = """
+SELECT
+  employee_id,
+  last_name,
+  first_name
+FROM
+  TeraShirt.employee
+WHERE
+  "role" = 'デザイナー'
+"""
+
+check_explain = false

@@ -1,0 +1,84 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000002"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "date", "time-series"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "時系列情報の分析"
+en = "Time-series Data"
+
+[title]
+ja = """「みどりの日」の変化"""
+en = """When did "みどりの日 (Greenery Day)" change?"""
+
+[content]
+ja = """<em>japan.japan_holidays</em> テーブルには、1955年以降の日本の祝日の情報が格納されています。
+祝日のうち、「みどりの日」はある年を境に日付が変更されました。その日付変更のあった前後年を見つけてください。<br />
+結果は、２列２行のテーブルで、１列目に年号 (整数)、２列めにその年のみどりの日の日付 (MM/DD 形式の文字列) で出力してください。 
+"""
+en = """<em>japan.japan_holidays</em> table stores the Japan's national holidays since 1955.
+Among which, the date of "みどりの日 (Greenery day)" has been changed at some time.
+Please find the years of the change and output a table of 2 rows and 2 columns, 
+where the first column is the year (integer) and the second column is the date of Greenery day (string of MM/DD format).
+"""
+
+
+# ヒントなしで
+[hint]
+ja = """
+<ul>
+<li><a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" rel="noopener noreferrer" target="_blank">データの出所（内閣府）</a>
+</ul>
+"""
+en = """
+<ul>
+<li><a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" rel="noopener noreferrer" target="_blank">Data source (the Cabinet Office of Japan)</a>
+</ul>
+"""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [2, 2]             # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false             # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+year,date
+2006,04/29
+2007,05/04
+"""
+query = """
+WITH tmp AS (
+  SELECT
+    EXTRACT(YEAR FROM calendar_date) AS "year",
+    CAST(CAST(calendar_date AS FORMAT 'MM/DD') AS VARCHAR(5)) AS "date"
+  FROM
+    japan.japan_holidays
+  WHERE
+    holiday_name = 'みどりの日'
+)
+SELECT
+  *
+FROM
+  tmp
+QUALIFY
+  LAG("date") OVER(ORDER BY "year") <> "date"
+  OR LEAD("date") OVER(ORDER BY "year") <> "date"
+"""
+
+check_explain = false

@@ -1,0 +1,80 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000109"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "date"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "6月に登録した顧客"
+en = "Customers who registered in June"
+
+[content]
+ja = """<em>TeraShirt.customer</em> テーブルには、TeraShirt社の顧客の情報が格納されています。
+このうち、6月に登録した顧客を表示してください。
+出力内容は、顧客のID、姓、名及び登録日としてください。
+"""
+en = """<em>TeraShirt.customer</em> table stores the information of customers of the TeraShirt company.
+Show customers who registered in June.
+The output should contain the customer ID, last name, first name and register date.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [9, 4]             # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str", "str", "str" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+customer_id,last_name,first_name,register_date
+12,小林,朗子,2021-06-26
+26,平松,あすか,2021-06-25
+27,岩崎,隆子,2022-06-29
+44,國政,知子,2021-06-02
+47,小堺,綾美,2022-06-17
+50,豊田,磨希,2022-06-03
+70,菊地,翔,2022-06-24
+77,木村,大志,2021-06-06
+101,伊東,秀太,2021-06-21
+"""
+
+query = """
+SELECT
+  customer_id,
+  last_name,
+  first_name,
+  register_date
+FROM
+  TeraShirt.customer
+WHERE
+  register_date BETWEEN DATE'2021-06-01' AND DATE'2021-06-30'
+"""
+
+check_explain = false

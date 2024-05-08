@@ -1,0 +1,33 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "store_id",
+  "name",
+  "name_en",
+  "region",
+  "prefecture",
+  "open_date",
+  "store_manager"
+]
+
+column_types = [
+  "INTEGER",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "VARCHAR(30) CHARACTER SET UNICODE",
+  "VARCHAR(8) CHARACTER SET UNICODE",
+  "VARCHAR(8) CHARACTER SET UNICODE",
+  "DATE",
+  "INTEGER"
+]
+geometry_columns = []
+geometry_epsg = []  # EPSG指定なしならNone
+
+primary_index = ["store_id"]
+secondary_index = [
+]
+partition_by = [ ]
+
+no_fastload = true

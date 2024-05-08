@@ -1,0 +1,244 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000116"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "sort"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "商品単価の順位"
+en = "Ranking of the unit price of products"
+
+[content]
+ja = """<em>TeraShirt.product</em> テーブルには、TeraShirt社の商品の情報が格納されています。
+商品単価を高い順に順位付けし、商品名、単価及び順位を表示してください。
+"""
+en = """<em>TeraShirt.product</em> table stores the information of products of the TeraShirt company.
+Rank the unit price of products in descending order and show the product name, unit price and ranking.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [180, 3]           # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "str", "int", "int" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+name,standard_unit_price,rank
+"パーカー (Men, XL, black)",9000,1
+"パーカー (Men, XL, gray)",9000,1
+"パーカー (Men, XL, orange)",9000,1
+"パーカー (Men, XL, white)",9000,1
+"パーカー (Women, XL, gray)",6750,5
+"パーカー (Women, XL, white)",6750,5
+"パーカー (Women, XL, orange)",6750,5
+"パーカー (Women, XL, black)",6750,5
+"パーカー (Men, L, white)",6000,9
+"パーカー (Men, L, black)",6000,9
+"パーカー (Men, M, black)",6000,9
+"パーカー (Men, M, orange)",6000,9
+"パーカー (Men, M, white)",6000,9
+"パーカー (Men, L, gray)",6000,9
+"パーカー (Men, L, orange)",6000,9
+"パーカー (Men, M, gray)",6000,9
+"パーカー (Men, S, white)",5400,17
+"パーカー (Men, S, orange)",5400,17
+"パーカー (Men, S, black)",5400,17
+"パーカー (Men, S, gray)",5400,17
+"パーカー (Men, XS, gray)",4800,21
+"パーカー (Men, XS, orange)",4800,21
+"パーカー (Men, XS, white)",4800,21
+"パーカー (Men, XS, black)",4800,21
+"パーカー (Kids, XL, black)",4500,25
+"ロングT (Men, XL, black)",4500,25
+"パーカー (Women, M, orange)",4500,25
+"パーカー (Women, L, gray)",4500,25
+"パーカー (Women, L, orange)",4500,25
+"パーカー (Women, M, gray)",4500,25
+"パーカー (Kids, XL, orange)",4500,25
+"ロングT (Men, XL, white)",4500,25
+"パーカー (Women, M, white)",4500,25
+"パーカー (Women, L, white)",4500,25
+"ロングT (Men, XL, gray)",4500,25
+"パーカー (Kids, XL, white)",4500,25
+"ロングT (Men, XL, orange)",4500,25
+"パーカー (Women, L, black)",4500,25
+"パーカー (Women, M, black)",4500,25
+"パーカー (Kids, XL, gray)",4500,25
+"パーカー (Women, S, orange)",4050,41
+"パーカー (Women, S, white)",4050,41
+"パーカー (Women, S, black)",4050,41
+"パーカー (Women, S, gray)",4050,41
+"パーカー (Women, XS, white)",3600,45
+"パーカー (Women, XS, black)",3600,45
+"パーカー (Women, XS, orange)",3600,45
+"パーカー (Women, XS, gray)",3600,45
+"ロングT (Women, XL, gray)",3400,49
+"ロングT (Women, XL, white)",3400,49
+"ロングT (Women, XL, black)",3400,49
+"ロングT (Women, XL, orange)",3400,49
+"ロングT (Men, L, black)",3000,53
+"ロングT (Men, L, gray)",3000,53
+"ロングT (Men, M, white)",3000,53
+"ロングT (Men, L, orange)",3000,53
+"ロングT (Men, M, orange)",3000,53
+"ロングT (Men, M, black)",3000,53
+"ロングT (Men, M, gray)",3000,53
+"Tシャツ (Men, XL, black)",3000,53
+"ロングT (Men, L, white)",3000,53
+"パーカー (Kids, L, black)",3000,53
+"パーカー (Kids, L, gray)",3000,53
+"パーカー (Kids, M, orange)",3000,53
+"パーカー (Kids, L, orange)",3000,53
+"パーカー (Kids, M, gray)",3000,53
+"パーカー (Kids, M, white)",3000,53
+"パーカー (Kids, L, white)",3000,53
+"Tシャツ (Men, XL, orange)",3000,53
+"Tシャツ (Men, XL, white)",3000,53
+"Tシャツ (Men, XL, gray)",3000,53
+"パーカー (Kids, M, black)",3000,53
+"ロングT (Men, S, black)",2700,73
+"パーカー (Kids, S, gray)",2700,73
+"ロングT (Men, S, white)",2700,73
+"パーカー (Kids, S, orange)",2700,73
+"ロングT (Men, S, gray)",2700,73
+"パーカー (Kids, S, white)",2700,73
+"ロングT (Men, S, orange)",2700,73
+"パーカー (Kids, S, black)",2700,73
+"ロングT (Men, XS, gray)",2400,81
+"パーカー (Kids, XS, gray)",2400,81
+"パーカー (Kids, XS, black)",2400,81
+"パーカー (Kids, XS, white)",2400,81
+"パーカー (Kids, XS, orange)",2400,81
+"ロングT (Men, XS, black)",2400,81
+"ロングT (Men, XS, orange)",2400,81
+"ロングT (Men, XS, white)",2400,81
+"Tシャツ (Women, XL, orange)",2250,89
+"ロングT (Women, L, gray)",2250,89
+"ロングT (Women, L, orange)",2250,89
+"ロングT (Women, M, gray)",2250,89
+"ロングT (Kids, XL, gray)",2250,89
+"ロングT (Kids, XL, orange)",2250,89
+"ロングT (Kids, XL, black)",2250,89
+"ロングT (Women, M, orange)",2250,89
+"ロングT (Women, L, white)",2250,89
+"ロングT (Women, L, black)",2250,89
+"Tシャツ (Women, XL, white)",2250,89
+"Tシャツ (Women, XL, black)",2250,89
+"ロングT (Kids, XL, white)",2250,89
+"ロングT (Women, M, white)",2250,89
+"ロングT (Women, M, black)",2250,89
+"Tシャツ (Women, XL, gray)",2250,89
+"ロングT (Women, S, white)",2000,105
+"Tシャツ (Men, M, white)",2000,105
+"Tシャツ (Men, M, gray)",2000,105
+"Tシャツ (Men, M, black)",2000,105
+"Tシャツ (Men, L, white)",2000,105
+"Tシャツ (Men, M, orange)",2000,105
+"Tシャツ (Men, L, black)",2000,105
+"ロングT (Women, S, gray)",2000,105
+"Tシャツ (Men, L, gray)",2000,105
+"ロングT (Women, S, orange)",2000,105
+"ロングT (Women, S, black)",2000,105
+"Tシャツ (Men, L, orange)",2000,105
+"ロングT (Women, XS, orange)",1800,117
+"Tシャツ (Men, S, black)",1800,117
+"Tシャツ (Men, S, white)",1800,117
+"ロングT (Women, XS, gray)",1800,117
+"ロングT (Women, XS, white)",1800,117
+"Tシャツ (Men, S, gray)",1800,117
+"ロングT (Women, XS, black)",1800,117
+"Tシャツ (Men, S, orange)",1800,117
+"Tシャツ (Men, XS, gray)",1600,125
+"Tシャツ (Men, XS, black)",1600,125
+"Tシャツ (Men, XS, white)",1600,125
+"Tシャツ (Men, XS, orange)",1600,125
+"Tシャツ (Women, L, black)",1500,129
+"Tシャツ (Women, M, white)",1500,129
+"Tシャツ (Women, M, black)",1500,129
+"Tシャツ (Kids, XL, white)",1500,129
+"Tシャツ (Women, L, white)",1500,129
+"Tシャツ (Kids, XL, orange)",1500,129
+"Tシャツ (Women, L, orange)",1500,129
+"Tシャツ (Women, M, orange)",1500,129
+"Tシャツ (Kids, XL, black)",1500,129
+"ロングT (Kids, L, white)",1500,129
+"ロングT (Kids, L, orange)",1500,129
+"Tシャツ (Women, L, gray)",1500,129
+"ロングT (Kids, M, gray)",1500,129
+"ロングT (Kids, L, gray)",1500,129
+"ロングT (Kids, M, orange)",1500,129
+"ロングT (Kids, L, black)",1500,129
+"ロングT (Kids, M, black)",1500,129
+"Tシャツ (Kids, XL, gray)",1500,129
+"Tシャツ (Women, M, gray)",1500,129
+"ロングT (Kids, M, white)",1500,129
+"ロングT (Kids, S, black)",1350,149
+"Tシャツ (Women, S, black)",1350,149
+"Tシャツ (Women, S, white)",1350,149
+"ロングT (Kids, S, white)",1350,149
+"Tシャツ (Women, S, orange)",1350,149
+"ロングT (Kids, S, orange)",1350,149
+"Tシャツ (Women, S, gray)",1350,149
+"ロングT (Kids, S, gray)",1350,149
+"ロングT (Kids, XS, black)",1200,157
+"Tシャツ (Women, XS, orange)",1200,157
+"ロングT (Kids, XS, white)",1200,157
+"Tシャツ (Women, XS, white)",1200,157
+"ロングT (Kids, XS, gray)",1200,157
+"Tシャツ (Women, XS, gray)",1200,157
+"ロングT (Kids, XS, orange)",1200,157
+"Tシャツ (Women, XS, black)",1200,157
+"Tシャツ (Kids, M, black)",1000,165
+"Tシャツ (Kids, L, black)",1000,165
+"Tシャツ (Kids, M, white)",1000,165
+"Tシャツ (Kids, L, white)",1000,165
+"Tシャツ (Kids, L, orange)",1000,165
+"Tシャツ (Kids, M, gray)",1000,165
+"Tシャツ (Kids, M, orange)",1000,165
+"Tシャツ (Kids, L, gray)",1000,165
+"Tシャツ (Kids, S, white)",900,173
+"Tシャツ (Kids, S, orange)",900,173
+"Tシャツ (Kids, S, black)",900,173
+"Tシャツ (Kids, S, gray)",900,173
+"Tシャツ (Kids, XS, gray)",800,177
+"Tシャツ (Kids, XS, black)",800,177
+"Tシャツ (Kids, XS, white)",800,177
+"Tシャツ (Kids, XS, orange)",800,177
+"""
+query = """
+SELECT
+  name, standard_unit_price,
+  RANK() OVER (ORDER BY standard_unit_price DESC)
+FROM
+  TeraShirt.product
+"""
+
+check_explain = false

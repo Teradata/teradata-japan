@@ -1,0 +1,118 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000501"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "median", "aggregation", "window-function"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# [category]
+# ja = "SQL/Teradata 基礎"
+# en = "SQL/Teradata Basic"
+
+[title]
+ja = "購入頻度の比較"
+en = "Frequent buyers"
+
+[content]
+ja = """TeraShirt社では、会員顧客を商品の購入頻度でグループ分けして、個別施策を講じることを検討しています。
+そこで、会員ごとに連続する購入日の間の日数間隔について調べることになりました。
+ただし、同じ日に起こった購入は計算上は1度の購入と考えます。
+<br />
+顧客間での購入頻度を比べるために、顧客ごとにその購入回数、購入間隔の平均値と中央値を算出してください。
+最終的には、10回以上の購入があった人に限定し、中央値の小さい順に並べてください (中央値が同じ場合は平均値、それも同じなら顧客IDでいずれも昇順に並べてください)。
+出力列は、顧客ID、顧客名 (名字と名前を半角スペースで結合)、購入間隔の平均、購入間隔の中央値としてください。
+<br />
+中央値の小さい顧客ほど頻度の高い顧客ということになります。
+"""
+en = """TeraShirt company is planning to implement different marketing plans by grouping the registered customers by their purchase frequencies.
+To this end, they have decided to explore the number of days between consecutive purchases by customers. 
+Note that we count only one purchase per day for each customer.
+<br />
+To compare the purchase frequencies across customers, please derive the number of purchases, the average and the median of the days between purchases.
+Finally, display them in increasing order by the median (In case of ties, sort them by the average and the customer ID). 
+Output columns will be the customer ID, the customer name (last name and first name concatenated by a space), the average days and the median days.
+<br />
+Those with smaller median values are more frequent buyers. Are them a large difference among customers?
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [24, 5]            # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "int", "float" ]         # 想定されたクエリ結果の変数型
+
+check_value = true        # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+customer_id,customer_name,n_visit,average_days,median_days
+2,伊藤 仁美,18,15.882352941176471,10
+100,岡安 啓介,13,24.083333333333332,14
+51,小嶋 麻理香,19,30.27777777777778,16
+72,中村 啓輔,17,36.6875,16
+66,岩崎 学,10,25.22222222222222,18
+77,木村 大志,13,42.166666666666664,26
+36,宮田 早,10,31.11111111111111,28
+39,齋藤 典代,15,43.07142857142857,30
+58,福與 瑛里,18,34.705882352941174,31
+102,松田 英克,11,38.8,31
+89,柴田 隼,11,40.7,32
+57,早瀬 秋葉,11,49.0,33
+44,國政 知子,13,45.0,34
+117,一寸木 琢也,14,39.15384615384615,35
+101,伊東 秀太,13,42.666666666666664,36
+55,中田 唯那,13,41.25,41
+49,明石 万由美,10,44.77777777777778,45
+85,河内 誠,10,47.0,47
+43,吉澤 槙,13,45.25,48
+109,久保 裕成,11,60.9,49
+92,杉本 宏文,11,54.9,55
+29,和田 紫穂,11,57.7,60
+107,須田 重之,10,64.0,61
+54,冨本 智絵,10,65.66666666666667,65
+"""
+
+query = """
+WITH tmp AS (
+  SELECT
+    purchase_date,
+    purchase_date - LAG(purchase_date) OVER (PARTITION BY customer_id ORDER BY purchase_date) AS duration,
+    customer_id
+  FROM
+    ( SELECT DISTINCT purchase_date, customer_id FROM terashirt.store_sales WHERE customer_id IS NOT NULL ) AS a
+)
+SELECT
+  b.customer_id,
+  b.last_name || ' ' || b.first_name AS customer_name,
+  count(*) AS n_visit,
+  avg(duration) AS average_days,
+  median(duration) AS median_days
+FROM
+  tmp
+  INNER JOIN terashirt.customer AS b ON tmp.customer_id = b.customer_id
+GROUP BY 1,2
+HAVING count(*) >= 10
+ORDER BY 5,4,1
+"""
+
+check_explain = false

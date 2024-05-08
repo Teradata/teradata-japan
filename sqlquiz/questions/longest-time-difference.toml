@@ -1,0 +1,93 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000208"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "window-function", "lag", "interval"
+]
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# 現在想定しているものは以下（これに含まれないものをアプリ上で表示されないようになっているので、別途アプリ側で追加する必要がある）
+#  ja: ("SQL/Teradata 基礎", "SQL/Teradata 中級", "地理空間情報の分析", "時系列情報の分析")
+#  en: ("SQL/Teradata Basic", "SQL/Teradata Intermediate", "Geospatial Information Analysis", "Time-series Data")
+[category]
+ja = "SQL/Teradata 中級"
+en = "SQL/Teradata Intermediate"
+
+[title]
+ja = """久しぶりのお客様"""
+en = """The longest time difference from the previous purchase"""
+
+[content]
+ja = """
+TeraShirt社の売上履歴において、同じ顧客の前回購入からの時間差が最も大きいものを見つけ、その顧客氏名 (姓名をスペースでつなげたもの), 購入日時、前回購入日時、時間差を表示してください。
+時間差は日単位の実数値として、小数第２位まで表示してください。
+なお、顧客名が不明のレコードは除いて考えてください。
+"""
+en = """
+In the sales record of the TeraShirt company, find the record with the longest duration from the previous purchase by the same cusomter.
+Report the customer name (last name and first name concatenated by a space), purchase timestamp, previous purchase timestamp, and the time difference.
+Express the time difference in hour unit up to the second decimal place.
+Ignore the records with missing customer name in this analysis.
+"""
+
+# ヒントが不要なら空文字列にする
+[hint]
+ja = """
+<ul>
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-SQL%E9%96%A2%E6%95%B0-%E5%BC%8F-%E3%81%8A%E3%82%88%E3%81%B2%E8%BF%B0%E9%83%A8-17.20/%E9%A0%86%E5%BA%8F%E4%BB%98%E3%81%8D%E5%88%86%E6%9E%90%E9%96%A2%E6%95%B0/%E3%82%A6%E3%82%A3%E3%83%B3%E3%83%88%E3%82%A6%E9%9B%86%E7%B4%84%E9%96%A2%E6%95%B0/LAG/LEAD" rel="noopener noreferrer" target="_blank">LAG/LEAD</a>
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-SQL-Date-and-Time-Functions-and-Expressions/March-2019/DateTime-and-Interval-Functions-and-Expressions/Arithmetic-Operators-and-ANSI-DateTime-and-Interval-Data-Types/Calculating-the-Difference-Between-Two-DateTime-Values" rel="noopener noreferrer" target="_blank>Calculating the Difference Between Two DateTime Values</a>
+</ul>
+"""
+en = """
+<ul>
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-SQL-Functions-Expressions-and-Predicates-17.20/Ordered-Analytical/Window-Aggregate-Functions/LAG/LEAD" rel="noopener noreferrer" target="_blank">LAG/LEAD</a>
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-SQL-Date-and-Time-Functions-and-Expressions/March-2019/DateTime-and-Interval-Functions-and-Expressions/Arithmetic-Operators-and-ANSI-DateTime-and-Interval-Data-Types/Calculating-the-Difference-Between-Two-DateTime-Values" rel="noopener noreferrer" target="_blank>Calculating the Difference Between Two DateTime Values</a>
+</ul>
+"""
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true  # クエリ結果の行列数の一致を求めるか
+shape = [1, 4]      # 想定されたクエリ結果のサイズ
+
+check_type = false         # クエリ結果の列の型の一致を求めるか
+types = [ "int", "str" ]   # 想定されたクエリ結果の変数型
+
+check_value = true  # 想定解との値の一致を求めるか
+ordered = false     # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"  # 想定結果の指定方法
+                    # csv      : 想定結果のCSV文字列を指定
+                    # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+
+csv = """
+customer_name,purchase_timestamp,prev_purchase_timestamp,day_diff
+鏡山 琴音,2022-07-19 11:00:59+09:00,2021-07-06 12:00:36+09:00,377.96
+"""
+
+query = """
+WITH tmp AS (
+  SELECT
+    c.last_name || ' ' || c.first_name AS customer_name,
+    s.purchase_timestamp,
+    lag(s.purchase_timestamp) OVER (PARTITION BY s.customer_id ORDER BY purchase_timestamp) AS prev_purchase_timestamp,
+    (s.purchase_timestamp - prev_purchase_timestamp) DAY(4) TO HOUR AS time_diff
+  FROM
+    TeraShirt.store_sales AS s
+    INNER JOIN TeraShirt.customer AS c
+      ON s.customer_id = c.customer_id
+  QUALIFY prev_purchase_timestamp IS NOT NULL
+)
+SELECT
+  customer_name, purchase_timestamp, prev_purchase_timestamp,
+  EXTRACT(DAY FROM time_diff) + 1.00*EXTRACT(HOUR FROM time_diff)/24 AS day_diff
+FROM
+  tmp
+QUALIFY time_diff = MAX(time_diff) OVER ()
+"""
+
+check_explain = false   # クエリのExplain結果に関する条件を課すか
+explain_should_include = []      # Explanation が含むべきキーワードのリスト
+explain_should_not_include = []  # Explanation が含んではいけないキーワードのリスト

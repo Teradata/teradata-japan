@@ -1,0 +1,70 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000110"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "string"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "店舗の都道府県名"
+en = "The prefecture of stores"
+
+[content]
+ja = """<em>TeraShirt.store</em> テーブルには、TeraShirt社の店舗の情報が格納されています。
+店舗の都道府県名について、行政区画を表す「都」「道」「府」「県」を除いて表示してください。
+出力は店舗の名前、及び行政区画を除いた都道府県名とすること。
+"""
+en = """<em>TeraShirt.store</em> table stores the information of stores of the TeraShirt company.
+Show the prefecture of stores without '都', '道', '府' and '県' which represent the administrative district.
+The output should be the store name and prefecture without the administrative district.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [4, 2]             # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "str", "str" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+name,prefecture
+３番通り店,東京
+中央駅前店,神奈川
+空港第２ターミナル店,千葉
+赤坂山アウトレット店,宮城
+"""
+
+query = """
+SELECT
+  name, SUBSTRING(prefecture FROM 1 FOR LENGTH(prefecture)-1) AS prefecture
+FROM
+  TeraShirt.store
+"""
+
+check_explain = false

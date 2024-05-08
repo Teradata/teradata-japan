@@ -1,0 +1,103 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+#qid = "q00000107"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "window-function"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# [category]
+# ja = "SQL/Teradata 基礎"
+# en = "SQL/Teradata Basic"
+
+[title]
+ja = "累積売上金額の推移"
+en = "Trend of cumulative sales"
+
+[content]
+ja = """TeraShirt社の店舗売上を用いて、各月終了時点のその年の累積売上金額を計算してください。
+<br />
+結果には、年、日付（月末の日付）、累積売上金額を表示して、日付順で並べ替えてください。
+"""
+en = """
+Using the store sales of the TeraShirt company, calculate the cumulative sales values by year at the end of each month.
+<br />
+Display year, date (the last day of the month), and cumulative sales values and sort them by the date.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false         # クエリ結果の行列数の一致を求めるか
+shape = [24, 5]            # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "int", "float" ]         # 想定されたクエリ結果の変数型
+
+check_value = true        # 想定解との値の一致を求めるか
+ordered = true            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+year,month_end,cum_sales
+2021,2021-05-31,1107095
+2021,2021-06-30,1497945
+2021,2021-07-31,1882245
+2021,2021-08-31,2276645
+2021,2021-09-30,2674805
+2021,2021-10-31,3063790
+2021,2021-11-30,3498090
+2021,2021-12-31,3794560
+2022,2022-01-31,377760
+2022,2022-02-28,801360
+2022,2022-03-31,1245751
+2022,2022-04-30,1698089
+2022,2022-05-31,2226508
+2022,2022-06-30,2609058
+2022,2022-07-31,3094408
+2022,2022-08-31,3560258
+2022,2022-09-30,4028158
+2022,2022-10-31,4590938
+2022,2022-11-30,5085538
+2022,2022-12-31,5633873
+"""
+
+query = """
+WITH tmp AS (
+  SELECT
+    EXTRACT(YEAR FROM purchase_date) AS "year",
+    TRUNC(purchase_date, 'MM') + 
+      INTERVAL '1' MONTH - INTERVAL '1' DAY AS month_end,
+    SUM(sales_value) AS total_sales
+  FROM
+    TeraShirt.store_sales
+  GROUP BY 1,2
+)
+SELECT
+  "year", month_end,
+  SUM(total_sales) OVER (
+    PARTITION BY "year"
+    ORDER BY month_end
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+  ) AS cum_sales
+FROM
+  tmp
+ORDER BY 2
+"""
+
+check_explain = false

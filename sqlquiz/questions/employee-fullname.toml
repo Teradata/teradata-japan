@@ -1,0 +1,80 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000118"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "string"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "従業員のフルネーム"
+en = "The full name of employees"
+
+[content]
+ja = """<em>TeraShirt.employee</em> テーブルには、TeraShirt社の従業員の情報が格納されています。
+従業員の姓と名を連結し、フルネームを表示してください。
+ただし、姓と名の間に半角スペースを1個入れてください。
+"""
+en = """<em>TeraShirt.employee</em> table stores the information of employees in the TeraShirt company.
+Concatenate the last name and first name of employees and show the full name.
+The output should contain a space between the last name and first name.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [15, 1]            # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "str" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+full_name
+ブラウン グリフィン
+ベルガモ ジョバンニ
+クーパー ブレンダ
+高橋 大介
+渡辺 拓也
+小川 博
+臼井 努
+高岡 和弘
+鈴木 あゆみ
+長谷川 茜
+井上 栞
+望月 千春
+内藤 沙耶
+梶山 美紀
+中村 史子
+"""
+query = """
+SELECT
+  last_name || ' ' || first_name AS full_name
+FROM
+  TeraShirt.employee
+"""
+
+check_explain = false

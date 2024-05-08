@@ -1,0 +1,27 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "line_name",
+  "company",
+  "station_name",
+  "geometry"
+]
+column_types = [
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "ST_Geometry"
+]
+geometry_columns = ["geometry"]
+geometry_epsg = [4326]  # EPSG指定なしならNone
+
+primary_index = []
+secondary_index = [
+  { columns = ["geometry"], order_by = [], unique = false }
+]
+partition_by = [ "COLUMN" ]
+
+no_fastload = true

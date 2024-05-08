@@ -1,0 +1,262 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000119"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "comparison-operator",
+  "conditional-branch"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "商品の価格帯"
+en = "The price range of products"
+
+[content]
+ja = """<em>TeraShirt.product</em> テーブルには、TeraShirt社の商品の情報が格納されています。
+全ての商品について、単価をもとに'Low'、'Middle'、'High'という3つの価格帯へ分類してください。
+出力内容は、商品名、単価及び価格帯としてください。
+<ul>
+  <li>1000未満：'Low'</li>
+  <li>1000以上3000未満：'Middle'</li>
+  <li>3000以上：'High'</li>
+</ul>
+"""
+en = """<em>TeraShirt.product</em> table stores the information of products of the TeraShirt company.
+Categorize products into 3 price ranges below based on the unit price.
+The output should contain the product name, unit price and price range.
+<ul>
+  <li>less than 1000: 'Low'</li>
+  <li>greater than or equal to 1000 and less than 3000: 'Middle'</li>
+  <li>greater than or equal to 3000: 'High'</li>
+</ul>
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [180, 3]           # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "str", "int", "str" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+name,standard_unit_price,price_range
+"Tシャツ (Men, XS, orange)",1600,Middle
+"Tシャツ (Women, XS, orange)",1200,Middle
+"Tシャツ (Kids, XS, orange)",800,Low
+"Tシャツ (Men, S, orange)",1800,Middle
+"Tシャツ (Women, S, orange)",1350,Middle
+"Tシャツ (Kids, S, orange)",900,Low
+"Tシャツ (Men, M, orange)",2000,Middle
+"Tシャツ (Women, M, orange)",1500,Middle
+"Tシャツ (Kids, M, orange)",1000,Middle
+"Tシャツ (Men, L, orange)",2000,Middle
+"Tシャツ (Women, L, orange)",1500,Middle
+"Tシャツ (Kids, L, orange)",1000,Middle
+"Tシャツ (Men, XL, orange)",3000,High
+"Tシャツ (Women, XL, orange)",2250,Middle
+"Tシャツ (Kids, XL, orange)",1500,Middle
+"Tシャツ (Men, XS, white)",1600,Middle
+"Tシャツ (Women, XS, white)",1200,Middle
+"Tシャツ (Kids, XS, white)",800,Low
+"Tシャツ (Men, S, white)",1800,Middle
+"Tシャツ (Women, S, white)",1350,Middle
+"Tシャツ (Kids, S, white)",900,Low
+"Tシャツ (Men, M, white)",2000,Middle
+"Tシャツ (Women, M, white)",1500,Middle
+"Tシャツ (Kids, M, white)",1000,Middle
+"Tシャツ (Men, L, white)",2000,Middle
+"Tシャツ (Women, L, white)",1500,Middle
+"Tシャツ (Kids, L, white)",1000,Middle
+"Tシャツ (Men, XL, white)",3000,High
+"Tシャツ (Women, XL, white)",2250,Middle
+"Tシャツ (Kids, XL, white)",1500,Middle
+"Tシャツ (Men, XS, black)",1600,Middle
+"Tシャツ (Women, XS, black)",1200,Middle
+"Tシャツ (Kids, XS, black)",800,Low
+"Tシャツ (Men, S, black)",1800,Middle
+"Tシャツ (Women, S, black)",1350,Middle
+"Tシャツ (Kids, S, black)",900,Low
+"Tシャツ (Men, M, black)",2000,Middle
+"Tシャツ (Women, M, black)",1500,Middle
+"Tシャツ (Kids, M, black)",1000,Middle
+"Tシャツ (Men, L, black)",2000,Middle
+"Tシャツ (Women, L, black)",1500,Middle
+"Tシャツ (Kids, L, black)",1000,Middle
+"Tシャツ (Men, XL, black)",3000,High
+"Tシャツ (Women, XL, black)",2250,Middle
+"Tシャツ (Kids, XL, black)",1500,Middle
+"Tシャツ (Men, XS, gray)",1600,Middle
+"Tシャツ (Women, XS, gray)",1200,Middle
+"Tシャツ (Kids, XS, gray)",800,Low
+"Tシャツ (Men, S, gray)",1800,Middle
+"Tシャツ (Women, S, gray)",1350,Middle
+"Tシャツ (Kids, S, gray)",900,Low
+"Tシャツ (Men, M, gray)",2000,Middle
+"Tシャツ (Women, M, gray)",1500,Middle
+"Tシャツ (Kids, M, gray)",1000,Middle
+"Tシャツ (Men, L, gray)",2000,Middle
+"Tシャツ (Women, L, gray)",1500,Middle
+"Tシャツ (Kids, L, gray)",1000,Middle
+"Tシャツ (Men, XL, gray)",3000,High
+"Tシャツ (Women, XL, gray)",2250,Middle
+"Tシャツ (Kids, XL, gray)",1500,Middle
+"ロングT (Men, XS, orange)",2400,Middle
+"ロングT (Women, XS, orange)",1800,Middle
+"ロングT (Kids, XS, orange)",1200,Middle
+"ロングT (Men, S, orange)",2700,Middle
+"ロングT (Women, S, orange)",2000,Middle
+"ロングT (Kids, S, orange)",1350,Middle
+"ロングT (Men, M, orange)",3000,High
+"ロングT (Women, M, orange)",2250,Middle
+"ロングT (Kids, M, orange)",1500,Middle
+"ロングT (Men, L, orange)",3000,High
+"ロングT (Women, L, orange)",2250,Middle
+"ロングT (Kids, L, orange)",1500,Middle
+"ロングT (Men, XL, orange)",4500,High
+"ロングT (Women, XL, orange)",3400,High
+"ロングT (Kids, XL, orange)",2250,Middle
+"ロングT (Men, XS, white)",2400,Middle
+"ロングT (Women, XS, white)",1800,Middle
+"ロングT (Kids, XS, white)",1200,Middle
+"ロングT (Men, S, white)",2700,Middle
+"ロングT (Women, S, white)",2000,Middle
+"ロングT (Kids, S, white)",1350,Middle
+"ロングT (Men, M, white)",3000,High
+"ロングT (Women, M, white)",2250,Middle
+"ロングT (Kids, M, white)",1500,Middle
+"ロングT (Men, L, white)",3000,High
+"ロングT (Women, L, white)",2250,Middle
+"ロングT (Kids, L, white)",1500,Middle
+"ロングT (Men, XL, white)",4500,High
+"ロングT (Women, XL, white)",3400,High
+"ロングT (Kids, XL, white)",2250,Middle
+"ロングT (Men, XS, black)",2400,Middle
+"ロングT (Women, XS, black)",1800,Middle
+"ロングT (Kids, XS, black)",1200,Middle
+"ロングT (Men, S, black)",2700,Middle
+"ロングT (Women, S, black)",2000,Middle
+"ロングT (Kids, S, black)",1350,Middle
+"ロングT (Men, M, black)",3000,High
+"ロングT (Women, M, black)",2250,Middle
+"ロングT (Kids, M, black)",1500,Middle
+"ロングT (Men, L, black)",3000,High
+"ロングT (Women, L, black)",2250,Middle
+"ロングT (Kids, L, black)",1500,Middle
+"ロングT (Men, XL, black)",4500,High
+"ロングT (Women, XL, black)",3400,High
+"ロングT (Kids, XL, black)",2250,Middle
+"ロングT (Men, XS, gray)",2400,Middle
+"ロングT (Women, XS, gray)",1800,Middle
+"ロングT (Kids, XS, gray)",1200,Middle
+"ロングT (Men, S, gray)",2700,Middle
+"ロングT (Women, S, gray)",2000,Middle
+"ロングT (Kids, S, gray)",1350,Middle
+"ロングT (Men, M, gray)",3000,High
+"ロングT (Women, M, gray)",2250,Middle
+"ロングT (Kids, M, gray)",1500,Middle
+"ロングT (Men, L, gray)",3000,High
+"ロングT (Women, L, gray)",2250,Middle
+"ロングT (Kids, L, gray)",1500,Middle
+"ロングT (Men, XL, gray)",4500,High
+"ロングT (Women, XL, gray)",3400,High
+"ロングT (Kids, XL, gray)",2250,Middle
+"パーカー (Men, XS, orange)",4800,High
+"パーカー (Women, XS, orange)",3600,High
+"パーカー (Kids, XS, orange)",2400,Middle
+"パーカー (Men, S, orange)",5400,High
+"パーカー (Women, S, orange)",4050,High
+"パーカー (Kids, S, orange)",2700,Middle
+"パーカー (Men, M, orange)",6000,High
+"パーカー (Women, M, orange)",4500,High
+"パーカー (Kids, M, orange)",3000,High
+"パーカー (Men, L, orange)",6000,High
+"パーカー (Women, L, orange)",4500,High
+"パーカー (Kids, L, orange)",3000,High
+"パーカー (Men, XL, orange)",9000,High
+"パーカー (Women, XL, orange)",6750,High
+"パーカー (Kids, XL, orange)",4500,High
+"パーカー (Men, XS, white)",4800,High
+"パーカー (Women, XS, white)",3600,High
+"パーカー (Kids, XS, white)",2400,Middle
+"パーカー (Men, S, white)",5400,High
+"パーカー (Women, S, white)",4050,High
+"パーカー (Kids, S, white)",2700,Middle
+"パーカー (Men, M, white)",6000,High
+"パーカー (Women, M, white)",4500,High
+"パーカー (Kids, M, white)",3000,High
+"パーカー (Men, L, white)",6000,High
+"パーカー (Women, L, white)",4500,High
+"パーカー (Kids, L, white)",3000,High
+"パーカー (Men, XL, white)",9000,High
+"パーカー (Women, XL, white)",6750,High
+"パーカー (Kids, XL, white)",4500,High
+"パーカー (Men, XS, black)",4800,High
+"パーカー (Women, XS, black)",3600,High
+"パーカー (Kids, XS, black)",2400,Middle
+"パーカー (Men, S, black)",5400,High
+"パーカー (Women, S, black)",4050,High
+"パーカー (Kids, S, black)",2700,Middle
+"パーカー (Men, M, black)",6000,High
+"パーカー (Women, M, black)",4500,High
+"パーカー (Kids, M, black)",3000,High
+"パーカー (Men, L, black)",6000,High
+"パーカー (Women, L, black)",4500,High
+"パーカー (Kids, L, black)",3000,High
+"パーカー (Men, XL, black)",9000,High
+"パーカー (Women, XL, black)",6750,High
+"パーカー (Kids, XL, black)",4500,High
+"パーカー (Men, XS, gray)",4800,High
+"パーカー (Women, XS, gray)",3600,High
+"パーカー (Kids, XS, gray)",2400,Middle
+"パーカー (Men, S, gray)",5400,High
+"パーカー (Women, S, gray)",4050,High
+"パーカー (Kids, S, gray)",2700,Middle
+"パーカー (Men, M, gray)",6000,High
+"パーカー (Women, M, gray)",4500,High
+"パーカー (Kids, M, gray)",3000,High
+"パーカー (Men, L, gray)",6000,High
+"パーカー (Women, L, gray)",4500,High
+"パーカー (Kids, L, gray)",3000,High
+"パーカー (Men, XL, gray)",9000,High
+"パーカー (Women, XL, gray)",6750,High
+"パーカー (Kids, XL, gray)",4500,High
+"""
+query = """
+SELECT
+  name, standard_unit_price,
+  CASE
+    WHEN standard_unit_price < 1000 THEN 'Low'
+    WHEN standard_unit_price < 3000 THEN 'Middle'
+    WHEN standard_unit_price >= 3000 THEN 'High'
+    ELSE NULL
+  END AS price_range
+FROM
+  TeraShirt.product
+"""
+
+check_explain = false

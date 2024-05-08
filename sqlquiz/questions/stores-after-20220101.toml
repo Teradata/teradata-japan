@@ -1,0 +1,67 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000102"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "comparison-operator", "date"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "2022/01/01以降にオープンした店舗"
+en = "Stores opened on and after January 1st, 2022"
+
+[content]
+ja = """<em>TeraShirt.store</em> テーブルには、TeraShirt社の店舗の情報が格納されています。
+2022/01/01以降にオープンした店舗について、その名前とオープン日を表示してください。
+"""
+en = """<em>TeraShirt.store</em> table stores the information of stores of the TeraShirt company.
+Show the name and open date of stores opened on and after January 1st, 2022.
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [2, 2]             # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "str", "str" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+name,open_date
+空港第２ターミナル店,2022-02-05
+赤坂山アウトレット店,2022-09-03
+"""
+query = """
+SELECT
+  name, open_date
+FROM
+  TeraShirt.store
+WHERE
+  open_date >= DATE'2022-01-01'
+"""
+
+check_explain = false

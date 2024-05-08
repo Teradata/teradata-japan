@@ -1,0 +1,33 @@
+multiset = true
+fallback = false
+before_journal = false
+after_journal = false
+
+column_names = [
+  "product_id",
+  "name",
+  "type",
+  "color",
+  "size",
+  "target",
+  "standard_unit_price"
+]
+
+column_types = [
+  "INTEGER",
+  "VARCHAR(30) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(10) CHARACTER SET UNICODE",
+  "VARCHAR(5) CHARACTER SET LATIN",
+  "VARCHAR(20) CHARACTER SET UNICODE",
+  "INTEGER",
+]
+geometry_columns = []
+geometry_epsg = []  # EPSG指定なしならNone
+
+primary_index = ["product_id"]
+secondary_index = [
+]
+partition_by = [ ]
+
+no_fastload = true

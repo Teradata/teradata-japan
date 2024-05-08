@@ -1,0 +1,81 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q0010910"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "geospatial"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "地理空間情報の分析"
+en = "Geospatial Information Analysis"
+
+[title]
+ja = """飛び地の市区町村"""
+en = """Disjoint cities"""
+
+[content]
+ja = """
+地方自治体の中には、何らかの事情で飛び地が存在する（直接つながらない複数の部分に分かれている）ものがあります。
+群馬県に存在する飛び地の市区町村の名前をすべて表示してください。
+"""
+en = """
+Some municipalities consists of multiple disjoint parts.
+Show the names of all municipalites in Gumma (群馬) prefecture.
+"""
+
+
+# ヒントなしで
+[hint]
+ja = """
+<ul>
+<li><em>japan.cities</em> を使います
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods/ST_GeometryType-Method" rel="noopener noreferrer" target="_blank">ST_GeometryType (マニュアル)</a>
+<li>複数に分かれた幾何情報タイプとは？
+<li><a href="https://ja.wikipedia.org/wiki/%E9%A3%9B%E5%9C%B0" rel="noopener noreferrer" target="_blank">飛び地 (Wikipedia)</a>
+</ul>
+"""
+en = """
+<ul>
+<li>Use <em>japan.cities</em>
+<li><a href="https://docs.teradata.com/r/Teradata-VantageTM-Geospatial-Data-Types/July-2021/ST_Geometry-Constructors-and-Methods/ST_GeometryType-Method" rel="noopener noreferrer" target="_blank">ST_GeometryType (マニュアル)</a>
+<li>What geometry type represents disjoint parts with areas?
+<li><a href="https://ja.wikipedia.org/wiki/%E9%A3%9B%E5%9C%B0" rel="noopener noreferrer" target="_blank">飛び地 (Wikipedia)</a>
+</ul>
+"""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false         # クエリ結果の行列数の一致を求めるか
+shape = [1, 1]             # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+#types = [ "int" ]          # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false             # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"       # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+pref_name,city_name
+群馬県,桐生市
+群馬県,高崎市
+"""
+
+query = """
+SELECT 
+  pref_name, city_name
+FROM
+  japan.cities
+WHERE
+  pref_name = '群馬県'
+  AND geometry.ST_GeometryType() = 'ST_MultiPolygon'
+"""
+
+check_explain = false

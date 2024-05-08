@@ -1,0 +1,133 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000550"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "survival-analysis", "cumulative-distribution"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+# [category]
+# ja = "SQL/Teradata 基礎"
+# en = "SQL/Teradata Basic"
+
+[title]
+ja = "購入間隔分布の比較"
+en = "Comparison of duration between purchases"
+
+[content]
+ja = """TeraShirt社では、個人別の購入間隔の分布を可視化したいと考えています。モデルケースとして、顧客番号2と54の2名について考えます。
+<br />
+各個人について購入間隔の日数を求め（同じ日の購入は1回のみカウント）、その各日数に対して「購入間隔がその日数以下であった割合」を計算してください。
+なお、割合についてはFLOAT型としてください。
+<br />
+出力するのは、顧客ID、購入間隔日数、購入間隔がその日数以下であった割合の3列として、顧客IDと購入間隔日数で並べ替えてください。
+<br />
+Optional: 結果を用いて、個人ごとに横軸に購入間隔日数、縦軸に割合を取ってグラフ化してみてください。
+これは、統計学でいう累積分布関数になります。このグラフから、2人の顧客の購入間隔の大小はどう比べられるでしょうか？
+"""
+en = """TeraShirt company is visualizing the distribution of duration between the purchase per customers.
+Here, we take two customers 2 and 54 as examples.
+<br />
+For each customer, calculate the duration between two cosecutive purchases (purchases at the same day count only once),
+and then for each duration, calculate "the ratio where the duration is smaller than or equal to that duration."
+Define the ratio as the float type variable.
+<br />
+The output will be customer ID, duration between purchases, and the ratio where the duration is smaller than or equal to that duration,
+sorted by customer ID and the duration.
+<br />
+Optional: Using the output table, create a graph where the x-axis is the duration and y-axis is the ratio for each customer.
+Statistically this is called the cumulative distribution function.
+How would you compare the purchase duration of the two cutomers from the graph?
+"""
+
+
+[hint]
+ja = ""
+en = ""
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = false         # クエリ結果の行列数の一致を求めるか
+shape = [24, 5]            # 想定されたクエリ結果のサイズ
+
+check_type = false          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "int", "float" ]         # 想定されたクエリ結果の変数型
+
+check_value = true        # 想定解との値の一致を求めるか
+ordered = true            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+customer_id,duration,cum_ratio
+2,2,1.0000
+2,3,0.9412
+2,5,0.8824
+2,6,0.8235
+2,7,0.7647
+2,8,0.7059
+2,9,0.6471
+2,10,0.5882
+2,11,0.4706
+2,13,0.4118
+2,14,0.3529
+2,15,0.2941
+2,26,0.2353
+2,30,0.1765
+2,46,0.1176
+2,55,0.0588
+54,6,1.0000
+54,22,0.8889
+54,25,0.7778
+54,59,0.6667
+54,65,0.5556
+54,76,0.4444
+54,105,0.3333
+54,112,0.2222
+54,121,0.1111
+"""
+
+query = """
+with tmp AS (
+  SELECT DISTINCT customer_id, purchase_date
+  FROM TeraShirt.store_sales
+  WHERE customer_id IN (2, 54)
+)
+,tmp2 AS (
+  SELECT
+    customer_id,
+    purchase_date - LAG(purchase_date) OVER (
+    PARTITION BY customer_id ORDER BY purchase_date
+  ) AS duration
+  FROM tmp
+)
+,tmp3 AS (
+  SELECT customer_id, duration, COUNT(*) AS freq
+  FROM tmp2
+  WHERE duration IS NOT NULL
+  GROUP BY 1,2
+)
+SELECT
+  customer_id, duration,
+  CAST(1 AS FLOAT) * SUM(freq) OVER (
+    PARTITION BY customer_id
+    ORDER BY duration DESC
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+  ) / SUM(freq) OVER (PARTITION BY customer_id)
+  AS cum_ratio
+FROM
+ tmp3
+ORDER BY 1,2
+"""
+
+check_explain = false

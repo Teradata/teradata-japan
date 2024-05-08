@@ -1,0 +1,75 @@
+# IDはユニークな文字列であれば何でも良いが、なるべくこの形式で（たぶん並べ替えやすいので）
+qid = "q00000107"
+
+# タグは文字列の配列。なしでもよい。
+# タグには言語の区別はなくても良いだろう。
+tags = [
+  "arithmetic-function", "data-type"
+]
+
+
+# カテゴリは必ず１つの文字列。問題の分類に用いる
+# 使用できるカテゴリ一覧は別途用意する
+[category]
+ja = "SQL/Teradata 基礎"
+en = "SQL/Teradata Basic"
+
+[title]
+ja = "給与の常用対数"
+en = "The base 10 logarithm of salary"
+
+[content]
+ja = """<em>TeraShirt.employee</em> テーブルには、TeraShirt社の従業員の情報が格納されています。
+従業員の給与について、常用対数を小数第2位まで求めてください。
+出力は従業員のID、給与、常用対数とすること。
+"""
+en = """<em>TeraShirt.employee</em> table stores the information of employees in the TeraShirt company.
+Calculate the base 10 logarithm of salary.
+The output should be the employee ID, salary and the base 10 logarithm of it.
+"""
+
+
+[hint]
+ja = "常用対数を求めるための算術関数があります。"
+en = "You can use the arithmetic function for the base 10 logarithm."
+
+
+[references]
+ja = ""
+en = ""
+
+
+# 正誤判定に関する定義
+[judgement]
+check_shape = true         # クエリ結果の行列数の一致を求めるか
+shape = [15, 3]            # 想定されたクエリ結果のサイズ
+
+check_type = true          # クエリ結果の列の型の一致を求めるか
+types = [ "int", "int", "float" ]         # 想定されたクエリ結果の変数型
+
+check_value = true         # 想定解との値の一致を求めるか
+ordered = false            # クエリ結果の並び順が指定されているかどうか
+value_from = "csv"         # 想定結果の指定方法
+                           # csv      : 想定結果のCSV文字列を指定
+                           # query    : 想定結果を生成するクエリを指定。動的に実行して判定する
+csv = """
+employee_id,salary,log10
+1,5112200,6.71
+2,7595000,6.88
+3,5293500,6.72
+4,7910900,6.90
+5,6767200,6.83
+6,4928600,6.69
+7,5678000,6.75
+8,7663100,6.88
+9,5906900,6.77
+10,7204100,6.86
+11,6778800,6.83
+12,7458100,6.87
+13,5874800,6.77
+14,7477500,6.87
+15,5013500,6.70
+"""
+#query = 
+
+check_explain = false
