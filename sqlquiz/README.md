@@ -46,4 +46,5 @@
 - `./data/{databasename}/{tablename}/ddl.toml` はテーブルの設定です。列タイプやインデックスについて指定します。
 - `./data/{databasename}/{tablename}/data.csv` はデータの中身です（ヘッダ付き）。
 - `tdquiz.setup_tdquiz` を実行する自動的にこれらの定義を用いてデータベースとテーブルを作成するようになっています。
-- [prep](./prep) ディレクトリにある `0`から始まるノートブックは、現在使用しているテーブルの CSVファイルを生成するものです。
+- [prep](./prep) ディレクトリにある `0`から始まるノートブック（`00`を除く）は、現在使用しているテーブルの CSVファイルを生成するものです。
+- なお、[prep/00_run-all-notebooks.ipynb](prep/00_run-all-notebooks.ipynb) はディレクトリ内の自身を除くすべてのノートブックを実行するものです。
