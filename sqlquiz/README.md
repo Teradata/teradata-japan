@@ -26,3 +26,24 @@
 
 
 ### Enjoy SQL!
+
+
+## 開発者向け
+
+### 問題を編集・追加する
+
+- 問題は[questions](./questions) ディレクトリ直下に .toml ファイルで設定します。
+- 必須の要素は `title` `content` `judgement.query`, 任意の要素は `hint` です。その他の要素は使用していません。
+- 問題を追加したり削除するには、[questions/_questions.csv](./questions/_questions.csv) を編集してください。また、順序を変えると問題の並びが変化します。
+- 問題のカテゴリを追加・削除するには、 [questions/_categories.csv](questions/_categories.csv) を編集します。ノートブックはカテゴリ別に作成されます。
+- 問題が作成できたら、[prep/11_generate-notebooks.ipynb](prep/11_generate-notebooks.ipynb) を実行すると、ノートブックに反映されます。この結果をコミットしてください。
+
+### データを編集する
+
+- データは、[data](./data) ディレクトリ以下に配置します。
+- 保存場所のルールは `./data/{databasename}/{tablename}` です。
+- `./data/{databasename}/ddl.toml` はデータベースの設定です。基本的には `perm_size` だけ指定すれば十分です。
+- `./data/{databasename}/{tablename}/ddl.toml` はテーブルの設定です。列タイプやインデックスについて指定します。
+- `./data/{databasename}/{tablename}/data.csv` はデータの中身です（ヘッダ付き）。
+- `tdquiz.setup_tdquiz` を実行する自動的にこれらの定義を用いてデータベースとテーブルを作成するようになっています。
+- [prep](./prep) ディレクトリにある `0`から始まるノートブックは、現在使用しているテーブルの CSVファイルを生成するものです。
